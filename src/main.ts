@@ -7,7 +7,7 @@ async function bootstrap() {
 
   app.useGlobalPipes(new ValidationPipe({
     whitelist: true, // remueve propiedades que no estén definidas en el DTO
-    forbidNonWhitelisted: true, // lanza un error cuando hay propiedades no definidas en el DTO
+    forbidNonWhitelisted: true, // lanza un error cuando se envia propiedades no definidas en el DTO
   }));
 
   await app.listen(3000);

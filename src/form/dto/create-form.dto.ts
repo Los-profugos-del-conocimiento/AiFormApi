@@ -1,8 +1,9 @@
-import { IsString, IsInt, IsEnum } from 'class-validator';
+import { IsString, IsInt, IsEnum, MinLength, Min } from 'class-validator';
 
 
 export class CreateFormDTO {
     @IsString()
+    @MinLength(5)
     readonly prompt: string;
 
     @IsString()
@@ -10,6 +11,7 @@ export class CreateFormDTO {
     readonly type: string;
 
     @IsInt()
+    @Min(1)
     readonly questions: number;
 
     @IsString()
