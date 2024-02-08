@@ -1,7 +1,7 @@
 import { IsString, IsInt, IsEnum } from 'class-validator';
 
 
-export class FormDTO {
+export class CreateFormDTO {
     @IsString()
     readonly prompt: string;
 
