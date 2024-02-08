@@ -1,10 +1,20 @@
 import { Module } from '@nestjs/common';
 import { FormModule } from './form/form.module';
-import { UserModule } from './user/user.module';
-import { FilesModule } from './files/files.module';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { Form } from './form/entities/form.entity';
+import { CommonModule } from './common/common.module';
 
 @Module({
-  imports: [FormModule, UserModule, FilesModule],
+  imports: [
+    TypeOrmModule.forRoot({
+      type: 'sqlite',
+      database: 'aiform.sqlite',
+      entities: [__dirname + '/**/*.entity.{ts,js}'],
+      synchronize: true,
+    }),
+    FormModule,
+    CommonModule,
+  ],
   controllers: [],
   providers: [],
 })

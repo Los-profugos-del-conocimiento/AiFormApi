@@ -1,26 +1,44 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateFormDto } from './dto/create-form.dto';
 import { UpdateFormDto } from './dto/update-form.dto';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Form } from './entities/form.entity';
+import { Repository } from 'typeorm';
 
 @Injectable()
 export class FormService {
-  create(createFormDto: CreateFormDto) {
-    return 'This action adds a new form';
+  constructor(
+    @InjectRepository(Form)
+    private readonly formRepository: Repository<Form>,
+  ) {}
+
+  async create(createFormDto: CreateFormDto): Promise<Form> {
+    const newForm = this.formRepository.create(createFormDto);
+    return await this.formRepository.save(newForm);
   }
 
-  findAll() {
-    return `This action returns all form`;
+  async findAll(): Promise<Form[]> {
+    return await this.formRepository.find();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} form`;
+  async findOne(id: string): Promise<Form> {
+    const form = await this.formRepository.findOne({ where: { id } });
+    
+    if (!form) throw new NotFoundException(`Form with ID ${id} not found`);
+    
+    return form;
   }
 
-  update(id: number, updateFormDto: UpdateFormDto) {
-    return `This action updates a #${id} form`;
+  async update(id: string, updateFormDto: UpdateFormDto): Promise<Form> {
+    const form = await this.findOne(id);
+    Object.assign(form, updateFormDto);
+
+    return await this.formRepository.save(form);
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} form`;
+  async remove(id: string): Promise<void> {
+    const form = await this.findOne(id);
+
+    await this.formRepository.remove(form);
   }
 }

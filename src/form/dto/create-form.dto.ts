@@ -1,22 +1,27 @@
-import { IsString, IsInt, IsEnum, MinLength, Min } from 'class-validator';
+import { 
+    IsString, IsInt, IsEnum, IsOptional, IsArray,
+    MinLength, Min 
+} from 'class-validator';
+import { Type, ResponseType } from '../form.enum';
 
-
-export class CreateFormDTO {
+export class CreateFormDto {
     @IsString()
     @MinLength(5)
     readonly prompt: string;
 
     @IsString()
-    @IsEnum(['survey', 'quiz'])
+    @IsEnum(Type)
     readonly type: string;
 
     @IsInt()
     @Min(1)
     readonly questions: number;
 
-    @IsString()
-    @IsEnum(['multiple', 'single', 'boolean', 'text']) // this depends on limitation of google forms API
-    readonly responseType: string;
+    @IsString({ each: true })
+    @IsEnum(ResponseType, { each: true })
+    @IsOptional()
+    @IsArray()
+    readonly responseType: string[];
 
     @IsInt()
     @IsEnum([1, 2, 3, 4, 5])

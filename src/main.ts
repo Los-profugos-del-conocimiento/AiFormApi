@@ -10,6 +10,7 @@ async function bootstrap() {
     forbidNonWhitelisted: true, // lanza un error cuando se envia propiedades no definidas en el DTO
   }));
 
+  console.log('dirname', __dirname)
   await app.listen(3000);
 }
 bootstrap();
