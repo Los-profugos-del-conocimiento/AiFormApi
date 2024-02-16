@@ -1,12 +1,16 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
 import { ShortUuidPipe } from '../common/pipes/short-uuid.pipe';
+import { ChatGptService } from '../chat-gpt/chat-gpt.service';
 import { CreateFormDto } from './dto/create-form.dto';
 import { UpdateFormDto } from './dto/update-form.dto';
 import { FormService } from './form.service';
 
 @Controller('form')
 export class FormController {
-  constructor(private readonly formService: FormService) {}
+  constructor(
+    private readonly formService: FormService,
+    private readonly chatGptService: ChatGptService
+  ) {}
 
   @Post()
   create(@Body() createFormDto: CreateFormDto) {
@@ -14,8 +18,13 @@ export class FormController {
   }
 
   @Get()
-  findAll() {
-    return this.formService.findAll();
+  async findAll() {
+    const response: string = await this.chatGptService.generateCompletions([
+      { role: 'user', content: 'Hello' }
+    ]);
+    console.log('response', response);
+    return []
+    // return this.formService.findAll();
   }
 
   @Get(':id')

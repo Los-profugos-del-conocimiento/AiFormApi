@@ -4,6 +4,9 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { Form } from './form/entities/form.entity';
 import { CommonModule } from './common/common.module';
 import { GoogleFormsModule } from './google-forms/google-forms.module';
+import { ChatGptService } from './chat-gpt/chat-gpt.service';
+import { ChatGptModule } from './chat-gpt/chat-gpt.module';
+import { OpenAiModule } from './open-ai/open-ai.module';
 
 @Module({
   imports: [
@@ -16,8 +19,9 @@ import { GoogleFormsModule } from './google-forms/google-forms.module';
     FormModule,
     CommonModule,
     GoogleFormsModule,
+    ChatGptModule,
+    OpenAiModule,
   ],
-  controllers: [],
-  providers: [],
+  providers: [ChatGptService],
 })
 export class AppModule {}
