@@ -9,7 +9,7 @@ export class FormController {
   constructor(private readonly formService: FormService) {}
 
   @Post()
-  create(@Body() createFormDto: CreateFormDto) {
+  create(@Body() createFormDto: any) {
     return this.formService.create(createFormDto);
   }
 
@@ -24,7 +24,7 @@ export class FormController {
   }
 
   @Patch(':id')
-  update(@Param('id', ShortUuidPipe) id: string, @Body() updateFormDto: UpdateFormDto) {
+  update(@Param('id') id: string, @Body() updateFormDto: any) {
     return this.formService.update(id, updateFormDto);
   }
 

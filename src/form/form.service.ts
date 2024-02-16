@@ -1,3 +1,4 @@
+import { GoogleFormsService } from '../google-forms/google-forms.service';
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateFormDto } from './dto/create-form.dto';
 import { UpdateFormDto } from './dto/update-form.dto';
@@ -10,11 +11,14 @@ export class FormService {
   constructor(
     @InjectRepository(Form)
     private readonly formRepository: Repository<Form>,
+
+    private readonly googleFormsService: GoogleFormsService
   ) {}
 
-  async create(createFormDto: CreateFormDto): Promise<Form> {
-    const newForm = this.formRepository.create(createFormDto);
-    return await this.formRepository.save(newForm);
+  async create(createFormDto: CreateFormDto): Promise<any> {
+    return await this.googleFormsService.create(createFormDto);
+    // const newForm = this.formRepository.create(createFormDto);
+    // return await this.formRepository.save(newForm);
   }
 
   async findAll(): Promise<Form[]> {
@@ -29,11 +33,12 @@ export class FormService {
     return form;
   }
 
-  async update(id: string, updateFormDto: UpdateFormDto): Promise<Form> {
-    const form = await this.findOne(id);
-    Object.assign(form, updateFormDto);
+  async update(id: string, updateFormDto: any): Promise<Form> {
+    // const form = await this.findOne(id);
+    // Object.assign(form, updateFormDto);
 
-    return await this.formRepository.save(form);
+    // return await this.formRepository.save(form);
+    return await this.googleFormsService.batchUpdate(id, updateFormDto);
   }
 
   async remove(id: string): Promise<void> {
