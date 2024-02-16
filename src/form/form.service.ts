@@ -11,14 +11,11 @@ export class FormService {
   constructor(
     @InjectRepository(Form)
     private readonly formRepository: Repository<Form>,
-
-    private readonly googleFormsService: GoogleFormsService
   ) {}
 
   async create(createFormDto: CreateFormDto): Promise<any> {
-    return await this.googleFormsService.create(createFormDto);
-    // const newForm = this.formRepository.create(createFormDto);
-    // return await this.formRepository.save(newForm);
+    const newForm = this.formRepository.create(createFormDto);
+    return await this.formRepository.save(newForm);
   }
 
   async findAll(): Promise<Form[]> {
@@ -33,12 +30,11 @@ export class FormService {
     return form;
   }
 
-  async update(id: string, updateFormDto: any): Promise<Form> {
-    // const form = await this.findOne(id);
-    // Object.assign(form, updateFormDto);
+  async update(id: string, updateFormDto: UpdateFormDto): Promise<any> {
+    const form = await this.findOne(id);
+    Object.assign(form, updateFormDto);
 
-    // return await this.formRepository.save(form);
-    return await this.googleFormsService.batchUpdate(id, updateFormDto);
+    return await this.formRepository.save(form);
   }
 
   async remove(id: string): Promise<void> {

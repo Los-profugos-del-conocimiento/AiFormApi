@@ -4,8 +4,13 @@ export enum Type {
 }
 
 export enum ResponseType {
-    multiple = 'multiple',
-    single = 'single',
-    boolean = 'boolean',
-    text = 'text'
+    radio = 'radio',
+    checkbox = 'checkbox',
+    dropdown = 'dropdown',
+    text = 'text',
+    scale = 'scale',
+    date = 'date',
+    time = 'time',
+    fileUpload = 'fileUpload',
+    row = 'row'
 }

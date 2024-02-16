@@ -1,13 +1,13 @@
 import { Request, Item } from ".";
 
 export interface Form {
-    formId: string;
+    formId?: string;
     info: Info;
-    settings: FormSettings;
-    items: Item[];
-    revisionId: string;
-    responderUri: string;
-    linkedSheetId: string;
+    settings?: FormSettings;
+    items?: Item[];
+    revisionId?: string;
+    responderUri?: string;
+    linkedSheetId?: string;
 }
 
 export interface BatchUpdate {
@@ -17,13 +17,28 @@ export interface BatchUpdate {
 }
 
 export interface Info {
-    title?: string;
+    title: string;
     documentTitle?: string;
     description?: string;
 }
 
 export interface FormSettings {
     quizSettings?: QuizSettings;
+}
+
+export interface BatchUpdateResponse {
+    form: Form;
+    replies: Response[];
+    writeControl: WriteControl;
+}
+
+interface Response {
+    createItem: CreateItemResponse;
+}
+
+interface CreateItemResponse {
+    itemId: string;
+    questionId: string[];
 }
 
 interface QuizSettings {

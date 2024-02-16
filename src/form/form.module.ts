@@ -1,4 +1,3 @@
-import { GoogleFormsModule } from '../google-forms/google-forms.module';
 import { FormController } from './form.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Form } from './entities/form.entity';
@@ -8,6 +7,7 @@ import { Module } from '@nestjs/common';
 @Module({
   controllers: [FormController],
   providers: [FormService],
-  imports: [TypeOrmModule.forFeature([Form]), GoogleFormsModule],
+  imports: [TypeOrmModule.forFeature([Form])],
+  exports: [FormService],
 })
 export class FormModule {}
