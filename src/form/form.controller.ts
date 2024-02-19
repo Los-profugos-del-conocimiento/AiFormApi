@@ -19,12 +19,7 @@ export class FormController {
 
   @Get()
   async findAll() {
-    const response: string = await this.chatGptService.generateCompletions([
-      { role: 'user', content: 'Hello' }
-    ]);
-    console.log('response', response);
-    return []
-    // return this.formService.findAll();
+    return this.formService.findAll();
   }
 
   @Get(':id')

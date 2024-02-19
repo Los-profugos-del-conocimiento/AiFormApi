@@ -1,22 +1,31 @@
 import { Injectable } from '@nestjs/common';
 import { OpenAI } from 'openai';
-import { Completions } from './chat-gpt.interface';
+import { Completions, ChatCompletion } from './chat-gpt.interface';
 
 @Injectable()
 export class ChatGptService {
-    private readonly modelChat: string = 'gpt-3.5-turbo';
-    private readonly countChatCompletions: number = 1;
+    private readonly model: string = 'gpt-3.5-turbo-0125';
+    private readonly n: number = 1; // number of choices generated per request
 
     constructor(private readonly openai: OpenAI) {}
 
     async generateCompletions(messages: Completions): Promise<string> {
+        messages.unshift({ role: 'system', content: 'You are a helpful assistant.' });
         try {
-            const response = await this.openai.chat.completions.create({
-                n: this.countChatCompletions,
-                model: this.modelChat,
+            const response: ChatCompletion = await this.openai.chat.completions.create({
+                model: this.model,
+                n: this.n,
+                // prompt: messages[0].content,
                 messages,
+                response_format: { type: "json_object" },
+                // stream: true
             });
+
+            // for await (const chunk of response)
+            //     process.stdout.write(chunk.choices?.at(0)?.delta?.content || "");
         
+            // return 'asd';
+            console.log('usage', response.usage);
             return response.choices?.at(0)?.message?.content || '';
         } catch (error) {
             const msg = (error as any as Error)?.message || 'Uncontrolled error';
