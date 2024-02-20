@@ -1,17 +1,23 @@
 import { 
     IsString, IsInt, IsEnum, IsOptional, IsArray,
-    MinLength, Min 
+    MinLength, Min, ValidateNested, ArrayMinSize
 } from 'class-validator';
-import { Type, ResponseType } from '../form.enum';
+import { Type as IType, ResponseType } from '../form.enum';
+import { Type } from 'class-transformer';
+import { ItemDto } from './item.dto';
 
 export class CreateFormDto {
     @IsString()
-    @MinLength(5)
-    readonly prompt: string;
+    @IsEnum(IType)
+    readonly type: string;
 
     @IsString()
-    @IsEnum(Type)
-    readonly type: string;
+    @MinLength(5)
+    readonly title: string;
+
+    @IsString()
+    @MinLength(5)
+    readonly prompt: string;
 
     @IsInt()
     @Min(1)
@@ -21,9 +27,15 @@ export class CreateFormDto {
     @IsEnum(ResponseType, { each: true })
     @IsOptional()
     @IsArray()
-    readonly responseType: string[];
+    readonly answerTypes: string[];
 
     @IsInt()
     @IsEnum([1, 2, 3, 4, 5])
     readonly difficulty: number;
+
+    @ValidateNested({ each: true })
+    @Type(() => ItemDto)
+    @IsArray()
+    @ArrayMinSize(1)
+    items: ItemDto[];
 }

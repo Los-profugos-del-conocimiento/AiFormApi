@@ -1,12 +1,10 @@
 export enum Type {
-    surbey = 'survey',
+    survey = 'survey',
     quiz = 'quiz'
 }
 
 export enum ResponseType {
-    radio = 'radio',
-    checkbox = 'checkbox',
-    dropdown = 'dropdown',
+    multipleChoice = 'multipleChoice',
     text = 'text',
     scale = 'scale',
     date = 'date',

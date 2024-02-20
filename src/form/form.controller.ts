@@ -3,40 +3,40 @@ import { ShortUuidPipe } from '../common/pipes/short-uuid.pipe';
 import { ChatGptService } from '../chat-gpt/chat-gpt.service';
 import { CreateFormDto } from './dto/create-form.dto';
 import { UpdateFormDto } from './dto/update-form.dto';
-import { FormService } from './form.service';
+import { FormService } from './services/form.service';
 
 @Controller('form')
 export class FormController {
-  constructor(
-    private readonly formService: FormService,
-    private readonly chatGptService: ChatGptService
-  ) {}
+    constructor(
+        private readonly formService: FormService,
+        private readonly chatGptService: ChatGptService
+    ) {}
 
-  @Post()
-  create(@Body() createFormDto: CreateFormDto) {
-    return this.formService.create(createFormDto);
-  }
+    @Post()
+    create(@Body() createFormDto: CreateFormDto) {
+        return this.formService.create(createFormDto);
+    }
 
-  @Get()
-  async findAll() {
-    return this.formService.findAll();
-  }
+    @Get()
+    async findAll() {
+        return this.formService.findAll();
+    }
 
-  @Get(':id')
-  findOne(@Param('id', ShortUuidPipe) id: string) {
-    return this.formService.findOne(id);
-  }
+    @Get(':id')
+    findOne(@Param('id', ShortUuidPipe) id: string) {
+        return this.formService.findOne(id);
+    }
 
-  @Patch(':id')
-  update(
-    @Param('id', ShortUuidPipe) id: string, 
-    @Body() updateFormDto: UpdateFormDto
-  ) {
-    return this.formService.update(id, updateFormDto);
-  }
+    @Patch(':id')
+    update(
+        @Param('id', ShortUuidPipe) id: string, 
+        @Body() updateFormDto: UpdateFormDto
+    ) {
+        return this.formService.update(id, updateFormDto);
+    }
 
-  @Delete(':id')
-  remove(@Param('id', ShortUuidPipe) id: string) {
-    return this.formService.remove(id);
-  }
+    @Delete(':id')
+    remove(@Param('id', ShortUuidPipe) id: string) {
+        return this.formService.remove(id);
+    }
 }

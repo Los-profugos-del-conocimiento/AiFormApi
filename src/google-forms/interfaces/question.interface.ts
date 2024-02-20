@@ -4,7 +4,7 @@ import { Item } from ".";
 export interface Question {
     questionId?: string;
     required?: boolean;
-    grading: Grading;
+    grading?: Grading;
     choiceQuestion?: ChoiceQuestion;
     textQuestion?: TextQuestion;
     scaleQuestion?: ScaleQuestion;

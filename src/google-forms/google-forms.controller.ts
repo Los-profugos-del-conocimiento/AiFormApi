@@ -1,7 +1,7 @@
-import { Controller, Post, Param } from '@nestjs/common';
-import { GoogleFormsService } from './google-forms.service';
-import { FormService } from '../form/form.service';
 import { ShortUuidPipe } from '../common/pipes/short-uuid.pipe';
+import { GoogleFormsService } from './google-forms.service';
+import { FormService } from '../form/services/form.service';
+import { Controller, Post, Param } from '@nestjs/common';
 
 @Controller('google-forms')
 export class GoogleFormsController {

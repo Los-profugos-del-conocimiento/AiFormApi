@@ -5,9 +5,9 @@ import { FormModule } from '../form/form.module';
 import { Module } from '@nestjs/common';
 
 @Module({
-  imports: [CommonModule, FormModule],
-  controllers: [GoogleFormsController],
-  providers: [GoogleFormsService],
-  exports: [GoogleFormsService],
+    imports: [CommonModule, FormModule],
+    controllers: [GoogleFormsController],
+    providers: [GoogleFormsService],
+    exports: [GoogleFormsService],
 })
 export class GoogleFormsModule {}
