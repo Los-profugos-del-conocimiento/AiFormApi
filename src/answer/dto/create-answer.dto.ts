@@ -1,8 +1,9 @@
 import { IsString, IsBoolean, IsOptional } from 'class-validator';
 
-export class AnswerDto {
+export class CreateAnswerDto {
     @IsString()
-    readonly answerId: string;
+    @IsOptional()
+    readonly answerId?: string;
 
     @IsString()
     readonly text: string;

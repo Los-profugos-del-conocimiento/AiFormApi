@@ -1,12 +1,12 @@
 import { IsArray, IsEnum, IsOptional, IsString, ValidateNested } from 'class-validator';
-import { ResponseType } from '../form.enum';
+import { CreateAnswerDto } from '../../answer/dto/create-answer.dto';
+import { AnswerType } from '../../answer/answer.enum';
 import { Type } from 'class-transformer';
-import { AnswerDto } from './answer.dto';
 
-
-export class ItemDto {
+export class CreateItemDto {
     @IsString()
-    readonly itemId: string;
+    @IsOptional()
+    readonly itemId?: string;
 
     @IsString()
     readonly question: string;
@@ -16,11 +16,11 @@ export class ItemDto {
     readonly description?: string;
 
     @IsString()
-    @IsEnum(ResponseType)
+    @IsEnum(AnswerType)
     readonly answerType: string;
 
     @ValidateNested({ each: true })
-    @Type(() => AnswerDto)
+    @Type(() => CreateAnswerDto)
     @IsArray()
-    answers: AnswerDto[];
+    answers: CreateAnswerDto[];
 }

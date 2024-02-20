@@ -1,7 +1,7 @@
 import { Entity, Column, PrimaryColumn, OneToMany, ManyToOne } from 'typeorm';
+import { Answer } from '../../answer/entities/answer.entity';
+import { Form } from '../../form/entities/form.entity';
 import { generate as shortUuid } from 'short-uuid';
-import { Answer } from './answer.entity';
-import { Form } from './form.entity';
 
 @Entity()
 export class Item {
@@ -9,8 +9,8 @@ export class Item {
     id: string = shortUuid().slice(0, 8);
 
     // refers to itemId on Google Form's item interface
-    @Column()
-    itemId: string;
+    @Column({ nullable: true })
+    itemId?: string;
 
     @Column()
     question: string;

@@ -1,6 +1,6 @@
 import { Entity, Column, PrimaryColumn, OneToMany } from 'typeorm';
+import { Item } from '../../item/entities/item.entity';
 import { generate as shortUuid } from 'short-uuid';
-import { Item } from './item.entity';
 
 @Entity()
 export class Form {
@@ -19,10 +19,10 @@ export class Form {
     @Column({ type: 'integer' })
     questions: number;
 
-    @Column('simple-array', { nullable: true })
+    @Column('simple-array')
     answerTypes: string[];
 
-    @Column({ type: 'integer' })
+    @Column({ type: 'integer', nullable: true })
     difficulty: number;
 
     @Column({ nullable: true})

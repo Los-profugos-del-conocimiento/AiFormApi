@@ -1,7 +1,8 @@
+import { CreateAnswerDto } from './dto/create-answer.dto';
+import { UpdateAnswerDto } from './dto/update-answer.dto';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Answer } from '../entities/answer.entity';
+import { Answer } from './entities/answer.entity';
 import { Injectable } from '@nestjs/common';
-import { AnswerDto } from '../dto/answer.dto';
 import { Repository } from 'typeorm';
 
 @Injectable()
@@ -11,11 +12,11 @@ export class AnswerService {
         private readonly answerRepository: Repository<Answer>,
     ) {}
 
-    async create(createAnswerDto: AnswerDto): Promise<Answer> {
+    async create(createAnswerDto: CreateAnswerDto): Promise<Answer> {
         return await this.answerRepository.save(this.answerRepository.create(createAnswerDto));
     }
 
-    async createMany(createAnswerDtos: AnswerDto[]): Promise<Answer[]> {
+    async createMany(createAnswerDtos: CreateAnswerDto[]): Promise<Answer[]> {
         return await this.answerRepository.save(this.answerRepository.create(createAnswerDtos));
     }
 
@@ -27,7 +28,7 @@ export class AnswerService {
         return await this.answerRepository.findOne({ where: { id } });
     }
 
-    async update(id: string, updateAnswerDto: AnswerDto): Promise<Answer> {
+    async update(id: string, updateAnswerDto: UpdateAnswerDto): Promise<Answer> {
         const answer = await this.findOne(id);
         Object.assign(answer, updateAnswerDto);
 

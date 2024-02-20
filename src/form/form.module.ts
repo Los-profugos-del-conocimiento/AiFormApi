@@ -1,18 +1,15 @@
 import { ChatGptModule } from '../chat-gpt/chat-gpt.module';
-import { AnswerService } from './services/answer.service';
-import { FormService } from './services/form.service';
-import { ItemService } from './services/item.service';
 import { FormController } from './form.controller';
-import { Answer } from './entities/answer.entity';
+import { ItemModule } from '../item/item.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Form } from './entities/form.entity';
-import { Item } from './entities/item.entity';
+import { FormService } from './form.service';
 import { Module } from '@nestjs/common';
 
 @Module({
-    imports: [TypeOrmModule.forFeature([Form, Item, Answer]), ChatGptModule],
+    imports: [TypeOrmModule.forFeature([Form]), ChatGptModule, ItemModule],
     controllers: [FormController],
-    providers: [FormService, ItemService, AnswerService],
+    providers: [FormService],
     exports: [FormService],
 })
 export class FormModule {}

@@ -3,7 +3,7 @@ import { ShortUuidPipe } from '../common/pipes/short-uuid.pipe';
 import { ChatGptService } from '../chat-gpt/chat-gpt.service';
 import { CreateFormDto } from './dto/create-form.dto';
 import { UpdateFormDto } from './dto/update-form.dto';
-import { FormService } from './services/form.service';
+import { FormService } from './form.service';
 
 @Controller('form')
 export class FormController {

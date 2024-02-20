@@ -2,9 +2,10 @@ import {
     IsString, IsInt, IsEnum, IsOptional, IsArray,
     MinLength, Min, ValidateNested, ArrayMinSize
 } from 'class-validator';
-import { Type as IType, ResponseType } from '../form.enum';
+import { CreateItemDto } from '../../item/dto/create-item.dto';
+import { AnswerType } from '../../answer/answer.enum';
+import { Type as IType } from '../form.enum';
 import { Type } from 'class-transformer';
-import { ItemDto } from './item.dto';
 
 export class CreateFormDto {
     @IsString()
@@ -12,6 +13,7 @@ export class CreateFormDto {
     readonly type: string;
 
     @IsString()
+    @IsOptional()
     @MinLength(5)
     readonly title: string;
 
@@ -24,18 +26,19 @@ export class CreateFormDto {
     readonly questions: number;
 
     @IsString({ each: true })
-    @IsEnum(ResponseType, { each: true })
+    @IsEnum(AnswerType, { each: true })
     @IsOptional()
     @IsArray()
     readonly answerTypes: string[];
 
     @IsInt()
+    @IsOptional()
     @IsEnum([1, 2, 3, 4, 5])
     readonly difficulty: number;
 
     @ValidateNested({ each: true })
-    @Type(() => ItemDto)
+    @Type(() => CreateItemDto)
     @IsArray()
     @ArrayMinSize(1)
-    items: ItemDto[];
+    items: CreateItemDto[];
 }

@@ -7,6 +7,8 @@ import { Form } from './form/entities/form.entity';
 import { FormModule } from './form/form.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Module } from '@nestjs/common';
+import { ItemModule } from './item/item.module';
+import { AnswerModule } from './answer/answer.module';
 
 @Module({
     imports: [
@@ -21,6 +23,8 @@ import { Module } from '@nestjs/common';
         GoogleFormsModule,
         ChatGptModule,
         OpenAiModule,
+        ItemModule,
+        AnswerModule,
     ],
     providers: [ChatGptService],
 })
