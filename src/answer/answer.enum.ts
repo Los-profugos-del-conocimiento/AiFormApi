@@ -1,9 +1,11 @@
 export enum AnswerType {
-    multipleChoice = 'multipleChoice',
+    radio = 'radio',
+    checkbox = 'checkbox',
+    dropdown =  'dropdown',
     text = 'text',
     scale = 'scale',
     date = 'date',
     time = 'time',
-    fileUpload = 'fileUpload',
-    row = 'row'
+    file = 'file',
+    // row = 'row'
 }

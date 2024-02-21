@@ -2,6 +2,7 @@ import {
     IsString, IsInt, IsEnum, IsOptional, IsArray,
     MinLength, Min, ValidateNested, ArrayMinSize
 } from 'class-validator';
+import { Completions } from '../../chat-gpt/chat-gpt.interface';
 import { CreateItemDto } from '../../item/dto/create-item.dto';
 import { AnswerType } from '../../answer/answer.enum';
 import { Type as IType } from '../form.enum';
@@ -15,7 +16,7 @@ export class CreateFormDto {
     @IsString()
     @IsOptional()
     @MinLength(5)
-    readonly title: string;
+    readonly title?: string;
 
     @IsString()
     @MinLength(5)
@@ -29,16 +30,12 @@ export class CreateFormDto {
     @IsEnum(AnswerType, { each: true })
     @IsOptional()
     @IsArray()
-    readonly answerTypes: string[];
+    readonly answerTypes?: string[];
 
     @IsInt()
     @IsOptional()
     @IsEnum([1, 2, 3, 4, 5])
     readonly difficulty: number;
 
-    @ValidateNested({ each: true })
-    @Type(() => CreateItemDto)
-    @IsArray()
-    @ArrayMinSize(1)
-    items: CreateItemDto[];
+    completions?: Completions
 }

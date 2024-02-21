@@ -1,7 +1,5 @@
 import { GoogleFormsService } from '../google-forms/google-forms.service';
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { CreateFormDto } from './dto/create-form.dto';
-import { UpdateFormDto } from './dto/update-form.dto';
 import { ItemService } from '../item/item.service';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Form } from './entities/form.entity';
@@ -16,10 +14,10 @@ export class FormService {
         private readonly itemService: ItemService,
     ) {}
 
-    async create(createFormDto: CreateFormDto): Promise<Form> {
-        createFormDto.items = await this.itemService.createMany(createFormDto.items);
+    async create(form: Form): Promise<Form> {
+        form.items = await this.itemService.createMany(form.items);
 
-        return await this.formRepository.save(this.formRepository.create(createFormDto));
+        return await this.formRepository.save(this.formRepository.create(form));
     }
 
     async findAll(): Promise<Form[]> {
@@ -37,11 +35,8 @@ export class FormService {
         return form;
     }
 
-    async update(id: string, updateFormDto: UpdateFormDto): Promise<Form> {
-        const form = await this.findOne(id);
-        Object.assign(form, updateFormDto);
-
-        return await this.formRepository.save(form);
+    async update(id: string, form: Form): Promise<Form> {
+        return form;
     }
 
     async remove(id: string): Promise<void> {
