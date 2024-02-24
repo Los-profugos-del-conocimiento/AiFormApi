@@ -16,7 +16,7 @@ export class CreateFormDto {
     @IsString()
     @IsOptional()
     @MinLength(5)
-    readonly title?: string;
+    title: string;
 
     @IsString()
     @MinLength(5)

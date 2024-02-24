@@ -1,4 +1,6 @@
-import { IsString, IsBoolean, IsOptional } from 'class-validator';
+import { IsString, IsBoolean, IsOptional, IsNotEmpty } from 'class-validator';
+import { Item } from '../../item/entities/item.entity';
+import { Type } from 'class-transformer';
 
 export class CreateAnswerDto {
     @IsString()
@@ -11,4 +13,8 @@ export class CreateAnswerDto {
     @IsOptional()
     @IsBoolean()
     readonly correct?: boolean;
+
+    @Type(() => Item)
+    @IsNotEmpty()
+    readonly item: Item;
 }

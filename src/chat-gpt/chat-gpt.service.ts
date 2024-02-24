@@ -10,7 +10,7 @@ export class ChatGptService {
     constructor(private readonly openai: OpenAI) {}
 
     async generateCompletions(messages: Completions): Promise<string> {
-        messages.unshift({ role: 'system', content: 'You are a helpful assistant.' });
+        messages.unshift({ role: 'system', content: 'Gpt Boy, eres un genial asistente.' });
         try {
             const response: ChatCompletion = await this.openai.chat.completions.create({
                 model: this.model,
@@ -24,8 +24,8 @@ export class ChatGptService {
             // for await (const chunk of response)
             //     process.stdout.write(chunk.choices?.at(0)?.delta?.content || "");
         
+            // console.log('usage', response.usage);
             // return 'asd';
-            console.log('usage', response.usage);
             return response.choices?.at(0)?.message?.content || '';
         } catch (error) {
             const msg = (error as any as Error)?.message || 'Uncontrolled error';

@@ -1,6 +1,5 @@
 import { GoogleFormsService } from '../google-forms/google-forms.service';
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { ItemService } from '../item/item.service';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Form } from './entities/form.entity';
 import { Repository } from 'typeorm';
@@ -10,13 +9,9 @@ export class FormService {
     constructor(
         @InjectRepository(Form)
         private readonly formRepository: Repository<Form>,
-
-        private readonly itemService: ItemService,
     ) {}
 
     async create(form: Form): Promise<Form> {
-        form.items = await this.itemService.createMany(form.items);
-
         return await this.formRepository.save(this.formRepository.create(form));
     }
 
@@ -25,7 +20,7 @@ export class FormService {
     }
 
     async findOne(id: string): Promise<Form> {
-        const form = await this.formRepository.findOne({ 
+        const form: Form = await this.formRepository.findOne({ 
             where: { id },
             relations: ['items', 'items.answers']
         });

@@ -3,14 +3,14 @@ import { Completions } from '../chat-gpt/chat-gpt.interface';
 export const PromptRules = (prompt: string): Completions => {
     return [{
         role: 'user',
-        content: prompt
+        content: prompt + '.'
     }]
 }
 
 export const QuizRules: Completions = [{
     role: 'user',
     content: `
-        Genera un formulario de tipo Quiz. 
+        Genera un formulario en español de tipo Quiz. 
         Es decir, cada pregunta obligatoriamente debería tener una o varias respuestas correctas.
     `
 }]
@@ -18,7 +18,7 @@ export const QuizRules: Completions = [{
 export const SurveyRules: Completions = [{
     role: 'user',
     content: `
-        Genera un formulario de tipo Survey,
+        Genera un formulario en español de tipo Survey,
         Es decir, las preguntas no deberían tener respuestas correctas.
     `
 }]
@@ -42,8 +42,7 @@ export const QuestionRules = (questions: number): Completions => {
     return [{
         role: 'user',
         content: `
-            Genera el formulario con ${questions} preguntas.
-            Cada pregunta debe tener un tipo de respuesta definido.
+            El formulario resultante debería tener ${questions} preguntas en total.
         `
     }]
 }
@@ -57,12 +56,19 @@ export const AnswerRules = (answerTypes: string[], isQuiz: boolean): Completions
     return [{
         role: 'user',
         content: `
-            Para el formulario actual, los tipos de las respuestas de las preguntas
-            solo pueden ser de los tipos: ${answerTypes.join(', ')}.
-            Es importante aclarar que los tipos de respuesta indicados deberían
-            estar en al menos una pregunta del formulario.
-            
+            Los tipos de las respuestas de las preguntas
+            deben ser de los tipos: ${answerTypes.join(', ')}.
+            Es importante aclarar que todos los tipos de respuesta deben estar en 
+            las preguntas del formulario, por lo menos una vez, esto es obligatorio.
+            Esto quiere decir que el formulario debe tener al menos una pregunta de cada tipo.
+
             ${rulesContent}
+
+            Los ejemplos mostrados es para indicar la estructura de cada tipo de respuesta, 
+            no es obligatorio que la cantidad de respuestas o cantidad de respuesta correctas
+            sea igual a la mostrada en los ejemplos, define la cantidad de respuestas y la 
+            cantidad de respuestas correctas de acuerdo a las preguntas y a tu criterio. pueden ser
+            2 respuestas, pueden ser 5, las que sean convenientes para la pregunta y según la dificultad.
         `.trim()
     }];
 };
@@ -70,15 +76,16 @@ export const AnswerRules = (answerTypes: string[], isQuiz: boolean): Completions
 export const ResponseRules: Completions = [{
     role: 'user',
     content: `
-        Las preguntas y las respuestas deben estar generadas en formato json con la siguiente estructura 
-        y exactamente los nombres de keys mostrados a continuación:
+        Las preguntas y las respuestas deben estar generadas comoo un arreglo de objetos en formato json 
+        con la siguiente estructura y exactamente los nombres de keys mostrados a continuación para cada pregunta:
         
         {
-            "question": "¿Qué tipo de plástico consumes más?",
-            "responseType": "radio", // El tipo de respuesta para la pregunta
+            "question": "¿?",
+            "answerType": "file", // El tipo de respuesta para la pregunta, "file" solo es un ejemplo
             "answers": , // La definición de la key answers depende del tipo de respuesta explicado anteriormente 
         }
         
+        Genera la cantidad de preguntas exactas que se definieron anteriormente.
         Genera la respuesta solo devolviendo el json, no agregues texto o explicaciones adicionales,
         porque la respuesta que me des lo voy a parsear en JSON y no quiero que falle.
     `

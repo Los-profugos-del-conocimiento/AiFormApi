@@ -21,9 +21,9 @@ export class Item {
     @Column()
     answerType: string;
 
-    @OneToMany(() => Answer, answer => answer.item)
+    @OneToMany(() => Answer, answer => answer.item, { cascade: true, onDelete: 'CASCADE' })
     answers: Answer[];
 
-    @ManyToOne(() => Form, form => form.items)
+    @ManyToOne(() => Form, form => form.items, { onDelete: 'CASCADE' })
     form: Form;
 }

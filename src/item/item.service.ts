@@ -1,9 +1,8 @@
-import { AnswerService } from '../answer/answer.service';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateItemDto } from './dto/create-item.dto';
 import { UpdateItemDto } from './dto/update-item.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Item } from './entities/item.entity';
-import { Injectable } from '@nestjs/common';
 import { Repository } from 'typeorm';
 
 @Injectable()
@@ -11,20 +10,12 @@ export class ItemService {
     constructor(
         @InjectRepository(Item)
         private readonly itemRepository: Repository<Item>,
-
-        private readonly answerService: AnswerService,
     ) {}
 
-    async create(createItemDto: CreateItemDto): Promise<Item> {
-        return await this.itemRepository.save(this.itemRepository.create(createItemDto));
-    }
-
-    async createMany(createItemDtos: CreateItemDto[]): Promise<Item[]> {
-        return await Promise.all(createItemDtos.map(async (createItemDto) => {
-            createItemDto.answers = await this.answerService.createMany(createItemDto.answers);
-
-            return await this.create(createItemDto);
-        }));
+    async create(createItemDto: CreateItemDto[]): Promise<Item[]> {
+        return await Promise.all(createItemDto.map(async (createItem) =>
+            await this.itemRepository.save(this.itemRepository.create(createItem))
+        ));
     }
 
     async findAll(): Promise<Item[]> {
@@ -32,7 +23,11 @@ export class ItemService {
     }
 
     async findOne(id: string): Promise<Item> {
-        return await this.itemRepository.findOne({ where: { id }, relations: ['answers'] });
+        const item: Item = await this.itemRepository.findOne({ where: { id }, relations: ['answers'] });
+        
+        if (!item) throw new NotFoundException(`Item with ID ${id} not found`);
+
+        return item;
     }
 
     async update(id: string, updateItemDto: UpdateItemDto): Promise<Item> {

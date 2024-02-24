@@ -1,11 +1,11 @@
 import { 
     PromptRules, QuizRules, SurveyRules, DifficultyRules, QuestionRules, AnswerRules, ResponseRules 
 } from './form.rules';
-import { PipeTransform, Injectable, ArgumentMetadata } from '@nestjs/common';
+import { PipeTransform, Injectable, ArgumentMetadata, BadRequestException } from '@nestjs/common';
 import { CreateFormDto } from '../form/dto/create-form.dto';
-import { plainToClass } from 'class-transformer';
-import { validate } from 'class-validator';
+import { FormService } from './form.service';
 
+// change the name of the pipe
 @Injectable()
 export class ValidationPipe implements PipeTransform<any> {
     async transform(value: CreateFormDto, metadata: ArgumentMetadata) {
@@ -17,8 +17,11 @@ export class ValidationPipe implements PipeTransform<any> {
             ...AnswerRules(value.answerTypes, true),
             ...ResponseRules
         ]
-        // console.log({ completions });
+        
         value.completions = completions;
+
+        // toDo: generate a title with IA if not provided
+        if (!value.title) value.title = 'Untitled';
 
         return value;
     }
@@ -28,3 +31,20 @@ export class ValidationPipe implements PipeTransform<any> {
         return !types.includes(metatype);
     }
 }
+
+@Injectable()
+export class FormValidationPipe implements PipeTransform {
+    constructor(
+        private readonly formService: FormService
+    ) {}
+
+    async transform(values: any, metadata: ArgumentMetadata) {
+        for (const value of values) {
+            const formEntity = await this.formService.findOne(value.form);
+            if (!formEntity) throw new BadRequestException(`Form with ID ${value.id} not found`);
+        }
+
+        return values;
+    }
+}
+

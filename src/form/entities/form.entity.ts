@@ -5,7 +5,7 @@ import { generate as shortUuid } from 'short-uuid';
 @Entity()
 export class Form {
     @PrimaryColumn('varchar', { length: 8 })
-    id: string = shortUuid().slice(0, 8);
+    id?: string = shortUuid().slice(0, 8);
 
     @Column({ length: 10 })
     type: string;
@@ -20,7 +20,7 @@ export class Form {
     questions: number;
 
     @Column('simple-array')
-    answerTypes: string[];
+    answerTypes?: string[];
 
     @Column({ type: 'integer', nullable: true })
     difficulty: number;
@@ -28,6 +28,6 @@ export class Form {
     @Column({ nullable: true})
     googleFormsUrl?: string;
 
-    @OneToMany(() => Item, item => item.form)
+    @OneToMany(() => Item, item => item.form, { cascade: true, onDelete: 'CASCADE' })
     items: Item[];
 }

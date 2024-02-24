@@ -3,6 +3,7 @@ import { ShortUuidPipe } from '../common/pipes/short-uuid.pipe';
 import { ChatGptService } from '../chat-gpt/chat-gpt.service';
 import { CreateFormDto } from './dto/create-form.dto';
 import { UpdateFormDto } from './dto/update-form.dto';
+import { Form } from './entities/form.entity';
 import { FormService } from './form.service';
 import { ValidationPipe } from './form.pipe';
 
@@ -15,11 +16,15 @@ export class FormController {
 
     @Post()
     async create(@Body(ValidationPipe) createFormDto: CreateFormDto) {
-        // console.log({ createFormDto });
         const formResponse = await this.chatGptService.generateCompletions(createFormDto.completions);
-        console.log(JSON.parse(formResponse).questions);
+        
+        const { questions } = JSON.parse(formResponse);
 
-        // return this.formService.create(createFormDto);
+        delete createFormDto.completions;
+        
+        const form: Form = { ...createFormDto, items: questions };
+
+        return this.formService.create(form);
     }
 
     @Get()

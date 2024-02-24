@@ -7,7 +7,7 @@ import { FormService } from './form.service';
 import { Module } from '@nestjs/common';
 
 @Module({
-    imports: [TypeOrmModule.forFeature([Form]), ChatGptModule, ItemModule],
+    imports: [TypeOrmModule.forFeature([Form]), ChatGptModule],
     controllers: [FormController],
     providers: [FormService],
     exports: [FormService],
