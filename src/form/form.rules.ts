@@ -20,6 +20,7 @@ export const SurveyRules: Completions = [{
     content: `
         Genera un formulario en español de tipo Survey,
         Es decir, las preguntas no deberían tener respuestas correctas.
+        El campo "correct" de las respuestas debería ser omitido.
     `
 }]
 

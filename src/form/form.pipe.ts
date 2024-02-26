@@ -11,7 +11,7 @@ export class FormPrompt implements PipeTransform<any> {
         const completions = [
             ...PromptRules(createFormDto.prompt),
             ...(createFormDto.type === 'quiz' ? QuizRules : SurveyRules),
-            ...((createFormDto.type === 'quiz' && createFormDto.difficulty) && DifficultyRules(createFormDto.difficulty)),
+            ...((createFormDto.type === 'quiz' && createFormDto.difficulty) ? DifficultyRules(createFormDto.difficulty) : []),
             ...QuestionRules(createFormDto.questions),
             ...AnswerRules(createFormDto.answerTypes, true),
             ...ResponseRules
