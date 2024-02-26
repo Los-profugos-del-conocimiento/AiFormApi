@@ -3,8 +3,8 @@ import {
     InternalServerErrorException
 } from '@nestjs/common';
 import { validateOrReject, ValidationError } from 'class-validator';
-import { ValidateArrayPipe } from '../common/pipes/array.pipe';
 import { ShortUuidPipe } from '../common/pipes/short-uuid.pipe';
+import { ValidateArrayPipe } from '../common/pipes/array.pipe';
 import { FormValidationPipe } from '../form/form.pipe';
 import { CreateItemDto } from './dto/create-item.dto';
 import { UpdateItemDto } from './dto/update-item.dto';
@@ -44,6 +44,7 @@ export class ItemController {
         @Param('id', ShortUuidPipe) id: string, 
         @Body() updateItemDto: UpdateItemDto
     ) {
+        // toDo: test update item
         return this.itemService.update(id, updateItemDto);
     }
 

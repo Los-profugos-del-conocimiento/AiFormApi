@@ -30,6 +30,7 @@ export class ItemService {
         return item;
     }
 
+    // toDo: rewrite update method
     async update(id: string, updateItemDto: UpdateItemDto): Promise<Item> {
         const item = await this.findOne(id);
         Object.assign(item, updateItemDto);

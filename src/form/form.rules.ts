@@ -80,9 +80,14 @@ export const ResponseRules: Completions = [{
         con la siguiente estructura y exactamente los nombres de keys mostrados a continuación para cada pregunta:
         
         {
-            "question": "¿?",
-            "answerType": "file", // El tipo de respuesta para la pregunta, "file" solo es un ejemplo
-            "answers": , // La definición de la key answers depende del tipo de respuesta explicado anteriormente 
+            "questions" : [
+                {
+                    "question": "¿?",
+                    "answerType": "radio", // El tipo de respuesta para la pregunta, "radio" solo es un ejemplo
+                    "answers": , // La definición de la key answers depende del tipo de respuesta explicado anteriormente 
+                },
+                ...
+            ]
         }
         
         Genera la cantidad de preguntas exactas que se definieron anteriormente.

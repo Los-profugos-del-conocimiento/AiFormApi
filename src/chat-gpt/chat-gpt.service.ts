@@ -1,6 +1,6 @@
+import { Completions, ChatCompletion, FormResponse } from './chat-gpt.interface';
 import { Injectable } from '@nestjs/common';
 import { OpenAI } from 'openai';
-import { Completions, ChatCompletion } from './chat-gpt.interface';
 
 @Injectable()
 export class ChatGptService {
@@ -9,24 +9,24 @@ export class ChatGptService {
 
     constructor(private readonly openai: OpenAI) {}
 
-    async generateCompletions(messages: Completions): Promise<string> {
+    async generateForm(messages: Completions): Promise<FormResponse> {
         messages.unshift({ role: 'system', content: 'Gpt Boy, eres un genial asistente.' });
         try {
             const response: ChatCompletion = await this.openai.chat.completions.create({
+                response_format: { type: "json_object" },
                 model: this.model,
                 n: this.n,
-                // prompt: messages[0].content,
                 messages,
-                response_format: { type: "json_object" },
                 // stream: true
             });
 
             // for await (const chunk of response)
             //     process.stdout.write(chunk.choices?.at(0)?.delta?.content || "");
         
-            // console.log('usage', response.usage);
-            // return 'asd';
-            return response.choices?.at(0)?.message?.content || '';
+            // toDo: Save usage data on database
+            console.log('usage', response.usage);
+            // console.log('response', response.choices?.at(0)?.message?.content);
+            return JSON.parse(response.choices?.at(0)?.message?.content) || '';
         } catch (error) {
             const msg = (error as any as Error)?.message || 'Uncontrolled error';
             throw new Error(`AI Completions error: ${msg}`);

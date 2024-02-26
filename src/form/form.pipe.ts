@@ -5,25 +5,24 @@ import { PipeTransform, Injectable, ArgumentMetadata, BadRequestException } from
 import { CreateFormDto } from '../form/dto/create-form.dto';
 import { FormService } from './form.service';
 
-// change the name of the pipe
 @Injectable()
-export class ValidationPipe implements PipeTransform<any> {
-    async transform(value: CreateFormDto, metadata: ArgumentMetadata) {
+export class FormPrompt implements PipeTransform<any> {
+    async transform(createFormDto: CreateFormDto, metadata: ArgumentMetadata) {
         const completions = [
-            ...PromptRules(value.prompt),
-            ...(value.type === 'quiz' ? QuizRules : SurveyRules),
-            ...((value.type === 'quiz' && value.difficulty) && DifficultyRules(value.difficulty)),
-            ...QuestionRules(value.questions),
-            ...AnswerRules(value.answerTypes, true),
+            ...PromptRules(createFormDto.prompt),
+            ...(createFormDto.type === 'quiz' ? QuizRules : SurveyRules),
+            ...((createFormDto.type === 'quiz' && createFormDto.difficulty) && DifficultyRules(createFormDto.difficulty)),
+            ...QuestionRules(createFormDto.questions),
+            ...AnswerRules(createFormDto.answerTypes, true),
             ...ResponseRules
         ]
-        
-        value.completions = completions;
+
+        createFormDto.completions = completions;
 
         // toDo: generate a title with IA if not provided
-        if (!value.title) value.title = 'Untitled';
+        if (!createFormDto.title) createFormDto.title = 'Untitled';
 
-        return value;
+        return createFormDto;
     }
 
     private toValidate(metatype: any): boolean {

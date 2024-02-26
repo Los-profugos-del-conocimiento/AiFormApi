@@ -5,7 +5,7 @@ import { generate as shortUuid } from 'short-uuid';
 @Entity()
 export class Answer {
     @PrimaryColumn('varchar', { length: 8 })
-    id: string = shortUuid().slice(0, 8);
+    id?: string = shortUuid().slice(0, 8);
 
     // refers to questionId on Google Form's question interface
     @Column({ nullable: true })
@@ -18,5 +18,5 @@ export class Answer {
     correct?: boolean;
 
     @ManyToOne(() => Item, item => item.answers, { onDelete: 'CASCADE' })
-    item: Item;
+    item?: Item;
 }

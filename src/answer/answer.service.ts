@@ -1,10 +1,10 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateAnswerDto } from './dto/create-answer.dto';
 import { UpdateAnswerDto } from './dto/update-answer.dto';
+import { DeepPartial } from 'typeorm/common/DeepPartial';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Answer } from './entities/answer.entity';
 import { Repository } from 'typeorm';
-import { DeepPartial } from 'typeorm/common/DeepPartial';
 
 @Injectable()
 export class AnswerService {
@@ -12,12 +12,6 @@ export class AnswerService {
         @InjectRepository(Answer)
         private readonly answerRepository: Repository<Answer>,
     ) {}
-
-    // async create(createAnswerDto: CreateAnswerDto | CreateAnswerDto[]): Promise<Answer | Answer[]> {
-    //     if (Array.isArray(createAnswerDto))
-    //         return await this.answerRepository.save(this.answerRepository.create(createAnswerDto));
-    //     else return await this.answerRepository.save(this.answerRepository.create(createAnswerDto));
-    // }
 
     async create(createAnswerDto: CreateAnswerDto[]): Promise<Answer | Answer[]> {
         return await Promise.all(createAnswerDto.map(async (createAnswerDto) =>
@@ -37,6 +31,7 @@ export class AnswerService {
         return answer;
     }
 
+    // toDo: rewrite update method
     async update(id: string, updateAnswerDto: UpdateAnswerDto): Promise<Answer> {
         const answer = await this.findOne(id);
         Object.assign(answer, updateAnswerDto);
