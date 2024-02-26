@@ -1,5 +1,6 @@
 import { Form, BatchUpdate, BatchUpdateResponse } from './interfaces';
 import { AxiosAdapter } from '../common/adapters/axios.adapter';
+import { Form as FormEntity } from '../form/entities/form.entity';
 import { ConfigService } from '@nestjs/config';
 import { Injectable } from '@nestjs/common';
 
@@ -17,11 +18,19 @@ export class GoogleFormsService {
 
     private async executeRequest(url: string, data: Form | BatchUpdate): Promise<any> {
         const headers = { Authorization: `Bearer ${this.token}` };
-        return await this.http.post(url, data, { headers });
+        return await this.http.post(url, data, { headers })
+            .catch((error) => { 
+                console.log('error1', error); 
+                throw new Error('Failed to create Google Form')
+            });
     }
 
     async create(form: Form): Promise<Form> {
-        return await this.executeRequest(this.baseUrl, form);
+        const googleForm: Form = await this.executeRequest(this.baseUrl, form);
+
+        if (!googleForm.formId) throw new Error('Google Form not created.');
+
+        return googleForm;
     }
 
     async batchUpdate(formId: string, body: BatchUpdate): Promise<BatchUpdateResponse> {

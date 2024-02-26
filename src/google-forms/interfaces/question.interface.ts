@@ -14,18 +14,18 @@ export interface Question {
     rowQuestion?: RowQuestion;
 }
 
-interface Grading {
+export interface Grading {
     pointValue: number;
     correctAnswers: CorrectAnswers;
-    whenRight: Feedback;
-    whenWrong: Feedback;
-    generalFeedback: Feedback;
+    whenRight?: Feedback;
+    whenWrong?: Feedback;
+    generalFeedback?: Feedback;
 }
 
 export interface ChoiceQuestion {
     type: ChoiceType;
     options: Option[];
-    shuffle: boolean;
+    shuffle?: boolean;
 }
 
 interface TextQuestion {
@@ -35,8 +35,8 @@ interface TextQuestion {
 interface ScaleQuestion {
     low: number
     high: number;
-    lowLabel: string;
-    highLabel: string;
+    lowLabel?: string;
+    highLabel?: string;
 }
 
 interface DateQuestion {
@@ -71,7 +71,7 @@ interface Feedback {
 interface Option {
     value: string;
     image?: Image;
-    isOther: boolean;
+    isOther?: boolean;
 }
 
 interface CorrectAnswer {

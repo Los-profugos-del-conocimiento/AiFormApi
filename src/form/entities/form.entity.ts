@@ -8,26 +8,30 @@ export class Form {
     id?: string = shortUuid().slice(0, 8);
 
     @Column({ length: 10 })
-    type: string;
+    type?: string;
 
     @Column({ length: 100 })
-    title: string;
+    title?: string;
 
     @Column({ type: 'text' })
-    prompt: string;
+    prompt?: string;
 
     @Column({ type: 'integer' })
-    questions: number;
+    questions?: number;
 
     @Column('simple-array')
     answerTypes?: string[];
 
     @Column({ type: 'integer', nullable: true })
-    difficulty: number;
-
-    @Column({ nullable: true})
-    googleFormsUrl?: string;
+    difficulty?: number;
 
     @OneToMany(() => Item, item => item.form, { cascade: true, onDelete: 'CASCADE' })
-    items: Item[];
+    items?: Item[];
+
+    // Google Form fields
+    @Column({ nullable: true })
+    googleFormId?: string;
+
+    @Column({ nullable: true})
+    googleFormResponseUri?: string;
 }

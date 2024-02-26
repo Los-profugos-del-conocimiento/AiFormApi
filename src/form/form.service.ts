@@ -30,9 +30,9 @@ export class FormService {
         return form;
     }
 
-    async update(id: string, form: Form): Promise<Form> {
-        // toDo: update form
-        return form;
+    async update(id: string, form: Form): Promise<void> {
+        await this.findOne(id);
+        await this.formRepository.save({ ...form, id });
     }
 
     async remove(id: string): Promise<void> {
