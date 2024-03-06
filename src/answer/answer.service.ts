@@ -13,7 +13,7 @@ export class AnswerService {
         private readonly answerRepository: Repository<Answer>,
     ) {}
 
-    async create(createAnswerDto: CreateAnswerDto[]): Promise<Answer | Answer[]> {
+    async create(createAnswerDto: CreateAnswerDto[]): Promise<Answer[]> {
         return await Promise.all(createAnswerDto.map(async (createAnswerDto) =>
             await this.answerRepository.save(this.answerRepository.create(createAnswerDto))
         ));
