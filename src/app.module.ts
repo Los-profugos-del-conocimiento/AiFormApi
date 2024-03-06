@@ -12,6 +12,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { ItemModule } from './item/item.module';
 import { ConfigModule } from '@nestjs/config';
 import { Module } from '@nestjs/common';
+import { GoogleModule } from './google/google.module';
 
 @Module({
     imports: [
@@ -36,6 +37,7 @@ import { Module } from '@nestjs/common';
         GoogleFormsModule,
         ChatGptModule,
         OpenAiModule,
+        GoogleModule,
     ],
     providers: [ChatGptService],
 })
