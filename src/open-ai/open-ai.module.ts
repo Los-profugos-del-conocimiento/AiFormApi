@@ -8,7 +8,7 @@ import { OpenAI } from 'openai';
         provide: OpenAI,
         inject: [ConfigService],
         useFactory: (configService: ConfigService) => {
-            return new OpenAI(configService.get('OPENAI_API_KEY'));
+            return new OpenAI(configService.get('openaiApiKey'));
         }
     }],
     exports: [OpenAI],

@@ -1,0 +1,12 @@
+version: '3.9'
+
+services:
+    
+    redis:
+        container_name: aiform_redis
+        image: redis:alpine
+        command: redis-server
+        hostname: redis
+        ports:
+            - 6379:6379
+        restart: always

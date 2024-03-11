@@ -1,8 +1,10 @@
 import { ValidationExceptionFilter } from './common/filters/validation-exception.filter';
 import { ValidationPipe } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
+import * as cookieParser from 'cookie-parser';
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
+
 
 async function bootstrap() {
     const app = await NestFactory.create(AppModule);
@@ -19,6 +21,8 @@ async function bootstrap() {
         methods: 'GET,PATCH,POST,DELETE',
         allowedHeaders: 'Content-Type',
     });
+
+    app.use(cookieParser());
 
     await app.listen(configService.get<number>('port'));
     console.log(`Application is running on: ${await app.getUrl()}`);

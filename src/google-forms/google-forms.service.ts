@@ -13,7 +13,7 @@ export class GoogleFormsService {
         private readonly http: AxiosAdapter,
         private readonly configService: ConfigService
     ) {
-        this.token = this.configService.get('GOOGLE_API_TOKEN');
+        this.token = this.configService.get<string>('googleApiToken');
     }
 
     private async executeRequest(url: string, data: Form | BatchUpdate): Promise<any> {
