@@ -34,7 +34,7 @@ export class AnswerService {
     }
 
     async update(updateAnswerDto: UpdateAnswerDto[]): Promise<Answer[]> {
-        return await Promise.all(updateAnswerDto.map(async (dto) => {
+        return Promise.all(updateAnswerDto.map(async (dto) => {
             const answer = await this.findOne(dto.id);
             const formType = answer.item?.form?.type;
             const answerType = answer.item?.answerType;

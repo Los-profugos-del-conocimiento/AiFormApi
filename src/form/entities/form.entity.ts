@@ -24,7 +24,9 @@ export class Form extends Base {
     @Column({ type: 'integer', nullable: true })
     difficulty?: number;
 
-    @OneToMany(() => Item, item => item.form, { eager: true, cascade: true, onDelete: 'CASCADE' })
+    @OneToMany(
+        () => Item, item => item.form, { eager: true, cascade: true, onDelete: 'CASCADE' }
+    )
     items?: Item[];
 
     @ManyToOne(() => User, user => user.forms, { onDelete: 'CASCADE' })

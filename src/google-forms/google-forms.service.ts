@@ -19,10 +19,7 @@ export class GoogleFormsService {
     private async executeRequest(url: string, data: Form | BatchUpdate): Promise<any> {
         const headers = { Authorization: `Bearer ${this.token}` };
         return await this.http.post(url, data, { headers })
-            .catch((error) => { 
-                console.log('error1', error); 
-                throw new Error('Failed to create Google Form')
-            });
+            .catch((error) => { throw new Error('Failed to create Google Form') });
     }
 
     async create(form: Form): Promise<Form> {
