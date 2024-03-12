@@ -15,15 +15,12 @@ export class FormService {
         return await this.formRepository.save(this.formRepository.create(form));
     }
 
-    async findAll(): Promise<Form[]> {
-        return await this.formRepository.find({ relations: ['items', 'items.answers'] });
+    async findByUser(userId: string): Promise<Form[]> {
+        return await this.formRepository.find({ where: { user: { id: userId } } });
     }
 
     async findOne(id: string): Promise<Form> {
-        const form: Form = await this.formRepository.findOne({ 
-            where: { id },
-            relations: ['items', 'items.answers']
-        });
+        const form: Form = await this.formRepository.findOne({ where: { id } });
         
         if (!form) throw new NotFoundException(`Form with ID ${id} not found`);
         

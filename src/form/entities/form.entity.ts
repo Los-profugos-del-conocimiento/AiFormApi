@@ -1,6 +1,7 @@
-import { Entity, Column, PrimaryColumn, OneToMany } from 'typeorm';
+import { Entity, Column, PrimaryColumn, OneToMany, ManyToOne } from 'typeorm';
 import { Item } from '../../item/entities/item.entity';
 import { generate as shortUuid } from 'short-uuid';
+import { User } from '../../auth/entities/user.entity';
 
 @Entity()
 export class Form {
@@ -25,8 +26,11 @@ export class Form {
     @Column({ type: 'integer', nullable: true })
     difficulty?: number;
 
-    @OneToMany(() => Item, item => item.form, { cascade: true, onDelete: 'CASCADE' })
+    @OneToMany(() => Item, item => item.form, { eager: true, cascade: true, onDelete: 'CASCADE' })
     items?: Item[];
+
+    @ManyToOne(() => User, user => user.forms, { onDelete: 'CASCADE' })
+    user?: User;
 
     // Google Form fields
     @Column({ nullable: true })

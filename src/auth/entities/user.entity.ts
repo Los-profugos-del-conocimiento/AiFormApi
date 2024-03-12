@@ -1,4 +1,5 @@
-import { Entity, PrimaryColumn, Column } from 'typeorm';
+import { Entity, PrimaryColumn, Column, OneToMany } from 'typeorm';
+import { Form } from '../../form/entities/form.entity';
 import { generate as shortUuid } from 'short-uuid';
 
 @Entity()
@@ -17,4 +18,7 @@ export class User {
 
     @Column({ default: true })
     isActive: boolean;
+
+    @OneToMany(() => Form, form => form.user, { onDelete: 'CASCADE' })
+    forms: Form[];
 }

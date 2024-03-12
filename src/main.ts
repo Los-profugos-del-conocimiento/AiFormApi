@@ -17,9 +17,10 @@ async function bootstrap() {
     app.useGlobalFilters(new ValidationExceptionFilter());
 
     app.enableCors({
-        origin: '*',
+        origin: configService.get<string>('frontendUrl'),
         methods: 'GET,PATCH,POST,DELETE',
         allowedHeaders: 'Content-Type',
+        credentials: true,
     });
 
     app.use(cookieParser());

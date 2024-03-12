@@ -1,11 +1,10 @@
 import { RedisService } from '../redis/redis.service';
 import { InjectRepository } from '@nestjs/typeorm';
+import { Repository, DeleteResult } from 'typeorm';
 import { ConfigService } from '@nestjs/config';
 import { User } from './entities/user.entity';
 import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { Repository } from 'typeorm';
-// import jwt from 'jsonwebtoken';
 
 @Injectable()
 export class AuthService {
@@ -25,6 +24,10 @@ export class AuthService {
         return this.userRepository.save(this.userRepository.create(user));
     }
 
+    async removeUser(id: string): Promise<DeleteResult> {
+        return this.userRepository.delete(id);
+    }
+
     async generateToken({ email, id }: User): Promise<string> {
         return this.jwtService.sign({ email, id });
     }
@@ -35,17 +38,19 @@ export class AuthService {
     }
 
     async revokeToken(token: string): Promise<void> {
-        // const decoded = jwt.decode(token);
-        // const exp = (decoded as any).exp;
-        // const now = Math.floor(Date.now() / 1000);
+        const decoded = this.jwtService.decode(token);
+        const exp = decoded.exp * 1000;
+        const now = Date.now();
 
-        // await this.redisService.set(`revoked:${token}`, 'true', exp - now);
-
-        await this.redisService.set(`revoked:${token}`, 'true', 60 * 60 * 24 * 30);
-
+        await this.redisService.set(`revoked:${token}`, 'true', exp - now);
     }
 
-    async getTokensRevoked(): Promise<string[]> {
+    getTokensRevoked(): Promise<string[]> {
         return this.redisService.keys('revoked:*');
+    }
+
+    async removeTokensRevoked(): Promise<void> {
+        const keys = await this.redisService.keys('revoked:*');
+        keys.length > 0 && await this.redisService.del(keys);
     }
 }

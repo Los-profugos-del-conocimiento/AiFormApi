@@ -4,6 +4,7 @@ import { AuthService } from '../../auth/auth.service';
 import { PassportStrategy } from '@nestjs/passport';
 import { ExtractJwt, Strategy } from 'passport-jwt';
 import { ConfigService } from '@nestjs/config';
+import { Request } from 'express';
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
@@ -15,21 +16,20 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
             jwtFromRequest: ExtractJwt.fromExtractors([
                 req => {
                     if (!req || !req.cookies) return null;
-                    const token = req.cookies[this.configService.get<string>('jwtCookieName')];
-
-                    // const tokenRevoked = await this.authService.isTokenRevoked(token);
-
-                    // if (tokenRevoked)
-                    //     throw new UnauthorizedException('Token revoked.');
-
-                    return token;
+                    return req.cookies[this.configService.get<string>('jwtCookieName')];
                 },
             ]),
             secretOrKey: configService.get<string>('jwtSecret'),
+            passReqToCallback: true,
         });
     }
 
-    async validate({ email }: JwtPayload) {
+    async validate(req: Request, { email }: JwtPayload) {
+        const token = req.cookies[this.configService.get<string>('JWT_COOKIE_NAME')];
+
+        if (await this.authService.isTokenRevoked(token))
+            throw new UnauthorizedException('Token revoked.');
+
         const user = await this.authService.getUser(email)
 
         if (!user)

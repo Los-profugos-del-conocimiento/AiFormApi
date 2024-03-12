@@ -1,4 +1,4 @@
-import { Controller, Get, Req, Res, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Delete, Body, Req, Res, UseGuards } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { AuthService } from './auth.service';
 import { AuthGuard } from '@nestjs/passport';
@@ -25,6 +25,7 @@ export class AuthController {
         @Req() request: Request,
         @Res() response: Response,
     ) {
+        console.log('googleAuth', request.user);
         let user = await this.authService.getUser(request.user.email);
 
         if (!user) user = await this.authService.createUser(request.user);
@@ -35,9 +36,10 @@ export class AuthController {
             httpOnly: true, 
             secure: true, 
             sameSite: 'strict', 
-            maxAge: 30 * 24 * 60 * 60 * 1000 
+            maxAge: 1 * 24 * 60 * 60 * 1000 // 1 day
+            // maxAge: 30 * 24 * 60 * 60 * 1000 // 30 days
         });
-        response.redirect(`${this.configService.get<string>('urlFrontend')}/myForms`);
+        response.redirect(this.configService.get<string>('urlFrontend'));
     }
 
     @Get('logout')
@@ -54,5 +56,29 @@ export class AuthController {
     @Get('revoked')
     async getTokensRevoked() {
         return this.authService.getTokensRevoked();
+    }
+
+    @Post('revoke')
+    @UseGuards(AuthGuard('jwt'))
+    async revokeToken(
+        @Req() request: Request,
+    ) {
+        await this.authService.revokeToken(request.cookies[this.configService.get<string>('jwtCookieName')]);
+        return 'Token revoked.';
+    }
+
+    @Post('remove-revoked')
+    async removeRevoked() {
+        await this.authService.removeTokensRevoked();
+        return 'Revoked tokens removed.';
+    }
+
+    @Delete('remove-user')
+    @UseGuards(AuthGuard('jwt'))
+    async removeUser(
+        @Req() request: Request
+    ) {
+        const deleteResult = await this.authService.removeUser(request.user.id);
+        return { message: 'User removed.', user: request.user, deleteResult };
     }
 }

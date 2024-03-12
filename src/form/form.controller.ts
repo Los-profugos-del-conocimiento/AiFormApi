@@ -1,6 +1,6 @@
 import { 
     Controller, Get, Post, Body, Patch, Param, Delete,
-    InternalServerErrorException 
+    InternalServerErrorException, UseGuards, Req
 } from '@nestjs/common';
 import { ShortUuidPipe } from '../common/pipes/short-uuid.pipe';
 import { ChatGptService } from '../chat-gpt/chat-gpt.service';
@@ -9,7 +9,9 @@ import { CreateFormDto } from './dto/create-form.dto';
 import { UpdateFormDto } from './dto/update-form.dto';
 import { Form } from './entities/form.entity';
 import { FormService } from './form.service';
+import { AuthGuard } from '@nestjs/passport';
 import { FormPrompt } from './form.pipe';
+import { Request } from 'express';
 
 @Controller('form')
 export class FormController {
@@ -19,7 +21,11 @@ export class FormController {
     ) {}
 
     @Post()
-    async create(@Body(FormPrompt) createFormDto: CreateFormDto) {
+    @UseGuards(AuthGuard('jwt'))
+    async create(
+        @Body(FormPrompt) createFormDto: CreateFormDto,
+        @Req() request: Request
+    ) {
         const { questions }: FormResponse = await this.chatGptService.generateForm(createFormDto.completions);
 
         if (!questions) 
@@ -27,20 +33,25 @@ export class FormController {
 
         delete createFormDto.completions;
         
-        return this.formService.create({ ...createFormDto, items: questions } as Form);
+        return this.formService.create({ ...createFormDto, items: questions, user: request.user } as Form);
     }
 
     @Get()
-    async findAll() {
-        return this.formService.findAll();
+    @UseGuards(AuthGuard('jwt'))
+    async getFormsByUser(
+        @Req() request: Request
+    ) {
+        return this.formService.findByUser(request.user.id);
     }
 
     @Get(':id')
+    @UseGuards(AuthGuard('jwt'))
     findOne(@Param('id', ShortUuidPipe) id: string) {
         return this.formService.findOne(id);
     }
 
     @Patch(':id')
+    @UseGuards(AuthGuard('jwt'))
     update(
         @Param('id', ShortUuidPipe) id: string, 
         @Body() updateFormDto: UpdateFormDto
@@ -50,6 +61,7 @@ export class FormController {
     }
 
     @Delete(':id')
+    @UseGuards(AuthGuard('jwt'))
     remove(@Param('id', ShortUuidPipe) id: string) {
         return this.formService.remove(id);
     }
