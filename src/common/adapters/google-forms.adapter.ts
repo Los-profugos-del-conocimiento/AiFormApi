@@ -8,7 +8,7 @@ import { Injectable } from '@nestjs/common';
 export class GoogleFormsAdapter {
     constructor() {}
 
-    generateBatchUpdateRequest(form: Form, googleFormId: string): BatchUpdate {
+    generateBatchUpdateRequest(form: Form): BatchUpdate {
         const { type, items }: Form = form;
 
         const requests: Request[] = items.map((item, index) => ({

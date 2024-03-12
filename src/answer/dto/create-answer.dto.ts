@@ -12,7 +12,7 @@ export class CreateAnswerDto {
 
     @IsOptional()
     @IsBoolean()
-    readonly correct?: boolean;
+    correct?: boolean;
 
     @Type(() => Item)
     @IsNotEmpty()

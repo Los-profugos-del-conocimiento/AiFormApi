@@ -1,12 +1,10 @@
 import { Entity, PrimaryColumn, Column, OneToMany } from 'typeorm';
+import { Base } from '../../common/entities/base.entity';
 import { Form } from '../../form/entities/form.entity';
 import { generate as shortUuid } from 'short-uuid';
 
 @Entity()
-export class User {
-    @PrimaryColumn('varchar', { length: 8 })
-    id: string = shortUuid().slice(0, 8);
-
+export class User extends Base {
     @Column({ unique: true })
     email: string;
 

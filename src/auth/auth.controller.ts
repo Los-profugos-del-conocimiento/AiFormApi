@@ -25,8 +25,7 @@ export class AuthController {
         @Req() request: Request,
         @Res() response: Response,
     ) {
-        console.log('googleAuth', request.user);
-        let user = await this.authService.getUser(request.user.email);
+        let user = await this.authService.getUserByEmail(request.user.email);
 
         if (!user) user = await this.authService.createUser(request.user);
 

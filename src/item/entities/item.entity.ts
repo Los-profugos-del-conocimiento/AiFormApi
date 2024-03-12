@@ -1,13 +1,11 @@
 import { Entity, Column, PrimaryColumn, OneToMany, ManyToOne } from 'typeorm';
 import { Answer } from '../../answer/entities/answer.entity';
+import { Base } from '../../common/entities/base.entity';
 import { Form } from '../../form/entities/form.entity';
 import { generate as shortUuid } from 'short-uuid';
 
 @Entity()
-export class Item {
-    @PrimaryColumn('varchar', { length: 8 })
-    id?: string = shortUuid().slice(0, 8);
-
+export class Item extends Base {
     // refers to itemId on Google Form's item interface
     @Column({ nullable: true })
     itemId?: string;

@@ -110,7 +110,7 @@ const generateAnswerRules = (type: string, examples: string[], includeCorrect: b
 const QuestionRulesMap: Record<string, (isQuiz: boolean) => string> = {
     radio: (isQuiz) => generateAnswerRules("radio", ["Opción 1", "Opción 2", "Opción 3"], isQuiz),
     checkbox: (isQuiz) => generateAnswerRules("checkbox", ["Opción 1", "Opción 12", "Opción 3"], isQuiz),
-    dropdown: (isQuiz) => generateAnswerRules("dropdown", ["Opción 1", "Opción 2", "Opción 3"], isQuiz),
+    dropdown: (isQuiz) => generateAnswerRules("drop_down", ["Opción 1", "Opción 2", "Opción 3"], isQuiz),
     text: (isQuiz) => isQuiz ? generateAnswerRules("text", ["Respuesta correcta 1", "Respuesta correcta 2"], false) : '- text: Pregunta de texto\n    "answers": undefined',
     scale: (isQuiz) => isQuiz ? generateAnswerRules("scale", ["1", "2"], true) : '- scale: Pregunta de escala\n    "answers": undefined',
     date: (isQuiz) => isQuiz ? generateAnswerRules("date", ["2022-12-31", "2022-02-29"], true) : '- date: Pregunta de fecha\n    "answers": undefined',

@@ -35,15 +35,11 @@ export class GoogleFormsController {
         });
 
         const updateGoogleFormData: BatchUpdate = 
-            this.googleFormsAdapter.generateBatchUpdateRequest({ type, items }, googleForm.formId);
+            this.googleFormsAdapter.generateBatchUpdateRequest({ type, items });
 
         const updatedGoogleForm = 
             await this.googleFormsService.batchUpdate(googleForm.formId, updateGoogleFormData)
                 .catch(() => { throw new InternalServerErrorException('Failed to update Google Form') });
-                // .catch((error) => {
-                //     console.log('error', error); 
-                //     throw new InternalServerErrorException('Failed to create Google Form') 
-                // });
 
         console.log('updatedGoogleForm', JSON.stringify(updatedGoogleForm));
         // console.log('updatedGoogleForm', updatedGoogleForm);

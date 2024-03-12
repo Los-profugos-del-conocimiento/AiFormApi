@@ -1,13 +1,11 @@
 import { Entity, Column, PrimaryColumn, OneToMany, ManyToOne } from 'typeorm';
+import { Base } from '../../common/entities/base.entity';
 import { Item } from '../../item/entities/item.entity';
 import { generate as shortUuid } from 'short-uuid';
 import { User } from '../../auth/entities/user.entity';
 
 @Entity()
-export class Form {
-    @PrimaryColumn('varchar', { length: 8 })
-    id?: string = shortUuid().slice(0, 8);
-
+export class Form extends Base {
     @Column({ length: 10 })
     type?: string;
 

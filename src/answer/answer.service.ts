@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
 import { CreateAnswerDto } from './dto/create-answer.dto';
 import { UpdateAnswerDto } from './dto/update-answer.dto';
 import { DeepPartial } from 'typeorm/common/DeepPartial';
@@ -24,22 +24,34 @@ export class AnswerService {
     }
 
     async findOne(id: string): Promise<Answer> {
-        const answer: Answer = await this.answerRepository.findOne({ where: { id } });
+        const answer: Answer = await this.answerRepository.findOne({ 
+            where: { id }, relations: ['item', 'item.form']
+        });
 
         if (!answer) throw new NotFoundException(`Answer with ID ${id} not found`);
 
         return answer;
     }
 
-    // toDo: rewrite update method
-    async update(id: string, updateAnswerDto: UpdateAnswerDto): Promise<Answer> {
-        const answer = await this.findOne(id);
-        Object.assign(answer, updateAnswerDto);
-
-        return await this.answerRepository.save(answer);
+    async update(updateAnswerDto: UpdateAnswerDto[]): Promise<Answer[]> {
+        return await Promise.all(updateAnswerDto.map(async (dto) => {
+            const answer = await this.findOne(dto.id);
+            const formType = answer.item?.form?.type;
+            const answerType = answer.item?.answerType;
+    
+            if (formType === 'quiz' && ['radio', 'checkbox', 'drop_down', 'text'].includes(answerType)) {
+                if (dto.correct === undefined || dto.correct === null) 
+                    throw new BadRequestException('Correct field is required for quiz type forms');
+            } else delete dto.correct;
+    
+            Object.assign(answer, dto);
+    
+            return await this.answerRepository.save(answer);
+        }));
     }
+    
 
-    async remove(id: string): Promise<void> {
-        await this.answerRepository.remove(await this.findOne(id));
+    async remove(id: string): Promise<Answer> {
+        return this.answerRepository.remove(await this.findOne(id));
     }
 }

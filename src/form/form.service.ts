@@ -11,12 +11,12 @@ export class FormService {
         private readonly formRepository: Repository<Form>,
     ) {}
 
-    async create(form: Form): Promise<Form> {
-        return await this.formRepository.save(this.formRepository.create(form));
+    create(form: Form): Promise<Form> {
+        return this.formRepository.save(this.formRepository.create(form));
     }
 
-    async findByUser(userId: string): Promise<Form[]> {
-        return await this.formRepository.find({ where: { user: { id: userId } } });
+    findByUser(userId: string): Promise<Form[]> {
+        return this.formRepository.find({ where: { user: { id: userId } } });
     }
 
     async findOne(id: string): Promise<Form> {
@@ -32,7 +32,7 @@ export class FormService {
         await this.formRepository.save({ ...form, id });
     }
 
-    async remove(id: string): Promise<void> {
-        await this.formRepository.remove(await this.findOne(id));
+    async remove(id: string): Promise<Form> {
+        return this.formRepository.remove(await this.findOne(id));
     }
 }

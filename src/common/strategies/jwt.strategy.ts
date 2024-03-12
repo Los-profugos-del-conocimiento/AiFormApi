@@ -30,10 +30,7 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
         if (await this.authService.isTokenRevoked(token))
             throw new UnauthorizedException('Token revoked.');
 
-        const user = await this.authService.getUser(email)
-
-        if (!user)
-            throw new UnauthorizedException('User not found.');
+        const user = await this.authService.getUserByEmail(email)
 
         if (!user.isActive)
             throw new UnauthorizedException('User is inactive.');

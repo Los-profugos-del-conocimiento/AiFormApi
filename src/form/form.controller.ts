@@ -33,7 +33,7 @@ export class FormController {
 
         delete createFormDto.completions;
         
-        return this.formService.create({ ...createFormDto, items: questions, user: request.user } as Form);
+        return await this.formService.create({ ...createFormDto, items: questions, user: request.user } as Form);
     }
 
     @Get()
@@ -46,6 +46,7 @@ export class FormController {
 
     @Get(':id')
     @UseGuards(AuthGuard('jwt'))
+    // toDo: validate if the user has access to the form
     findOne(@Param('id', ShortUuidPipe) id: string) {
         return this.formService.findOne(id);
     }
@@ -62,7 +63,8 @@ export class FormController {
 
     @Delete(':id')
     @UseGuards(AuthGuard('jwt'))
-    remove(@Param('id', ShortUuidPipe) id: string) {
-        return this.formService.remove(id);
+    async remove(@Param('id', ShortUuidPipe) id: string) {
+        const formDeleted = await this.formService.remove(id);
+        return { message: 'Form removed.', formDeleted }
     }
 }

@@ -3,7 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, DeleteResult } from 'typeorm';
 import { ConfigService } from '@nestjs/config';
 import { User } from './entities/user.entity';
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 
 @Injectable()
@@ -16,16 +16,28 @@ export class AuthService {
         private readonly jwtService: JwtService,
     ) { }
 
-    async getUser(email: string): Promise<User> {
-        return this.userRepository.findOne({ where: { email } });
+    async getUserById(id: string): Promise<User> {
+        const user: User = await this.userRepository.findOne({ where: { id } });
+
+        if (!user) throw new NotFoundException(`User with ID ${id} not found.`);
+
+        return user;
+    }
+
+    async getUserByEmail(email: string): Promise<User> {
+        const user: User = await this.userRepository.findOne({ where: { email } });
+
+        if (!user) throw new NotFoundException(`User with email ${email} not found.`);
+
+        return user;
     }
 
     async createUser(user: User): Promise<User> {
         return this.userRepository.save(this.userRepository.create(user));
     }
 
-    async removeUser(id: string): Promise<DeleteResult> {
-        return this.userRepository.delete(id);
+    async removeUser(id: string): Promise<User> {
+        return this.userRepository.remove(await this.getUserById(id));
     }
 
     async generateToken({ email, id }: User): Promise<string> {

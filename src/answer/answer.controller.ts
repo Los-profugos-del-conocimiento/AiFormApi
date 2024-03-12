@@ -39,17 +39,14 @@ export class AnswerController {
         return this.answerService.findOne(id);
     }
 
-    @Patch(':id')
-    update(
-        @Param('id', ShortUuidPipe) id: string, 
-        @Body() updateAnswerDto: UpdateAnswerDto
-    ) {
-        // toDo: test update answer
-        return this.answerService.update(id, updateAnswerDto);
+    @Patch()
+    update(@Body() updateAnswerDto: UpdateAnswerDto[]) {
+        return this.answerService.update(updateAnswerDto);
     }
 
     @Delete(':id')
-    remove(@Param('id', ShortUuidPipe) id: string) {
-        return this.answerService.remove(id);
+    async remove(@Param('id', ShortUuidPipe) id: string) {
+        const answerDeleted = await this.answerService.remove(id);
+        return { message: 'Answer removed.', answerDeleted }
     }
 }
