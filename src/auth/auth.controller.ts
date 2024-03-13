@@ -29,7 +29,7 @@ export class AuthController {
 
         if (!user) user = await this.authService.createUser(request.user);
 
-        const token: string = await this.authService.generateToken(user);
+        const token: string = this.authService.generateToken(user);
 
         response.cookie(this.configService.get<string>('jwtCookieName'), token, { 
             httpOnly: true, 

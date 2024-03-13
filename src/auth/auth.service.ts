@@ -24,15 +24,11 @@ export class AuthService {
         return user;
     }
 
-    async getUserByEmail(email: string): Promise<User> {
-        const user: User = await this.userRepository.findOne({ where: { email } });
-
-        if (!user) throw new NotFoundException(`User with email ${email} not found.`);
-
-        return user;
+    getUserByEmail(email: string): Promise<User> {
+        return this.userRepository.findOne({ where: { email } });
     }
 
-    async createUser(user: User): Promise<User> {
+    createUser(user: User): Promise<User> {
         return this.userRepository.save(this.userRepository.create(user));
     }
 
@@ -40,7 +36,7 @@ export class AuthService {
         return this.userRepository.remove(await this.getUserById(id));
     }
 
-    async generateToken({ email, id }: User): Promise<string> {
+    generateToken({ email, id }: User): string {
         return this.jwtService.sign({ email, id });
     }
 

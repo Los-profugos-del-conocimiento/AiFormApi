@@ -4,6 +4,7 @@ import { UpdateAnswerDto } from './dto/update-answer.dto';
 import { DeepPartial } from 'typeorm/common/DeepPartial';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Answer } from './entities/answer.entity';
+import { validateAnswer } from './answer.utils';
 import { Repository } from 'typeorm';
 
 @Injectable()
@@ -14,9 +15,10 @@ export class AnswerService {
     ) {}
 
     async create(createAnswerDto: CreateAnswerDto[]): Promise<Answer[]> {
-        return await Promise.all(createAnswerDto.map(async (createAnswerDto) =>
-            await this.answerRepository.save(this.answerRepository.create(createAnswerDto))
-        ));
+        return await Promise.all(createAnswerDto.map(async (createAnswerDto) => {
+            const answer: Answer = this.answerRepository.create(createAnswerDto);
+            return await this.answerRepository.save(validateAnswer(answer));
+        }));
     }
 
     async findAll(): Promise<Answer[]> {

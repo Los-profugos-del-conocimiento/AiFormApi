@@ -17,7 +17,7 @@ async function bootstrap() {
     app.useGlobalFilters(new ValidationExceptionFilter());
 
     app.enableCors({
-        origin: configService.get<string>('frontendUrl'),
+        origin: configService.get<string>('urlFrontend'),
         methods: 'GET,PATCH,POST,DELETE',
         allowedHeaders: 'Content-Type',
         credentials: true,
