@@ -1,13 +1,7 @@
-import { 
-    Controller, Get, Post, Body, Patch, Param, Delete,
-    InternalServerErrorException 
-} from '@nestjs/common';
-import { validateOrReject, ValidationError } from 'class-validator';
+import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
 import { ShortUuidPipe } from '../common/pipes/short-uuid.pipe';
-import { ValidateArrayPipe } from '../common/pipes/array.pipe';
-import { CreateAnswerDto } from './dto/create-answer.dto';
-import { UpdateAnswerDto } from './dto/update-answer.dto';
-import { plainToInstance } from 'class-transformer';
+import { CreateAnswersDto, UpdateAnswersDto } from './dto';
+import { AnswerMutationPipe } from './answer.pipe';
 import { AnswerService } from './answer.service';
 
 @Controller('answer')
@@ -15,33 +9,13 @@ export class AnswerController {
     constructor(private readonly answerService: AnswerService) {}
 
     @Post()
-    async create(@Body(ValidateArrayPipe) createAnswerDto: CreateAnswerDto[]) {
-        try {
-            for (const item of createAnswerDto)
-                validateOrReject(plainToInstance(CreateAnswerDto, item))
-
-            return this.answerService.create(createAnswerDto);
-        } catch (errors) {
-            if (errors instanceof Array && errors[0] instanceof ValidationError)
-                throw errors[0];
-
-            throw new InternalServerErrorException();
-        }
-    }
-
-    @Get()
-    findAll() {
-        return this.answerService.findAll();
-    }
-
-    @Get(':id')
-    findOne(@Param('id', ShortUuidPipe) id: string) {
-        return this.answerService.findOne(id);
+    async create(@Body(AnswerMutationPipe) createAnswersDto: CreateAnswersDto) {
+        return this.answerService.create(createAnswersDto.answers);
     }
 
     @Patch()
-    update(@Body() updateAnswerDto: UpdateAnswerDto[]) {
-        return this.answerService.update(updateAnswerDto);
+    update(@Body(AnswerMutationPipe) updateAnswersDto: UpdateAnswersDto) {
+        return this.answerService.update(updateAnswersDto.answers);
     }
 
     @Delete(':id')

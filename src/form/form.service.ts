@@ -20,8 +20,9 @@ export class FormService {
     }
 
     async findOne(id: string): Promise<Form> {
+        if (!id) throw new NotFoundException('Form ID not provided.');
+
         const form: Form = await this.formRepository.findOne({ where: { id } });
-        
         if (!form) throw new NotFoundException(`Form with ID ${id} not found`);
         
         return form;

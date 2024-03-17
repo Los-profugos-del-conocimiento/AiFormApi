@@ -1,9 +1,9 @@
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { RedisService } from '../redis/redis.service';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, DeleteResult } from 'typeorm';
 import { ConfigService } from '@nestjs/config';
 import { User } from './entities/user.entity';
-import { Injectable, NotFoundException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 
 @Injectable()
@@ -17,14 +17,16 @@ export class AuthService {
     ) { }
 
     async getUserById(id: string): Promise<User> {
-        const user: User = await this.userRepository.findOne({ where: { id } });
+        if (!id) throw new NotFoundException('User ID not provided.');
 
+        const user: User = await this.userRepository.findOne({ where: { id } });
         if (!user) throw new NotFoundException(`User with ID ${id} not found.`);
 
         return user;
     }
 
     getUserByEmail(email: string): Promise<User> {
+        if (!email) throw new NotFoundException('Email not provided.');
         return this.userRepository.findOne({ where: { email } });
     }
 

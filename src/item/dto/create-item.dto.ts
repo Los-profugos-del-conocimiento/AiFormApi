@@ -1,6 +1,5 @@
 import { IsArray, IsEnum, IsOptional, IsString, IsNotEmpty, ValidateNested } from 'class-validator';
-import { CreateAnswerCascadeDto } from '../../answer/dto/create-answer-cascade.dto';
-import { CreateAnswerDto } from '../../answer/dto/create-answer.dto';
+import { CreateAnswerCascadeDto } from '../../answer/dto';
 import { Form } from '../../form/entities/form.entity';
 import { AnswerType } from '../../answer/answer.enum';
 import { Type } from 'class-transformer';
@@ -21,9 +20,9 @@ export class CreateItemDto {
     @IsEnum(AnswerType)
     readonly answerType: string;
 
-    @ValidateNested({ each: true })
-    @Type(() => CreateAnswerCascadeDto)
     @IsArray()
+    @Type(() => CreateAnswerCascadeDto)
+    @ValidateNested({ each: true })
     readonly answers: CreateAnswerCascadeDto[];
 
     @Type(() => Form)

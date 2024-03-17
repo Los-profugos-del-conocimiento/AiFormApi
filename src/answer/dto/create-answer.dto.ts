@@ -4,10 +4,6 @@ import { Type } from 'class-transformer';
 
 export class CreateAnswerDto {
     @IsString()
-    @IsOptional()
-    readonly answerId?: string;
-
-    @IsString()
     readonly text: string;
 
     @IsOptional()
@@ -16,5 +12,5 @@ export class CreateAnswerDto {
 
     @Type(() => Item)
     @IsNotEmpty()
-    readonly item: Item;
+    item: Item;
 }

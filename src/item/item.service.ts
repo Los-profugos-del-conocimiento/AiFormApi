@@ -18,14 +18,12 @@ export class ItemService {
         ));
     }
 
-    async findAll(): Promise<Item[]> {
-        return await this.itemRepository.find();
-    }
-
     async findOne(id: string): Promise<Item> {
-        const item: Item = await this.itemRepository.findOne({ where: { id } });
-        
-        if (!item) throw new NotFoundException(`Item with ID ${id} not found`);
+        console.log('find one item:', id);
+        if (!id) throw new NotFoundException('Item ID not provided.');
+
+        const item: Item = await this.itemRepository.findOne({ where: { id }, relations: { form: true } })
+        if (!item) throw new NotFoundException(`Item with ID ${id} not found.`);
 
         return item;
     }

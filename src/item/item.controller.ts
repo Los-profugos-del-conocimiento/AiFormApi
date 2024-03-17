@@ -4,7 +4,6 @@ import {
 } from '@nestjs/common';
 import { validateOrReject, ValidationError } from 'class-validator';
 import { ShortUuidPipe } from '../common/pipes/short-uuid.pipe';
-import { ValidateArrayPipe } from '../common/pipes/array.pipe';
 import { FormValidationPipe } from '../form/form.pipe';
 import { CreateItemDto } from './dto/create-item.dto';
 import { UpdateItemDto } from './dto/update-item.dto';
@@ -16,7 +15,7 @@ export class ItemController {
     constructor(private readonly itemService: ItemService) {}
 
     @Post()
-    async create(@Body(ValidateArrayPipe, FormValidationPipe) createItemDto: CreateItemDto[]) {
+    async create(@Body(FormValidationPipe) createItemDto: CreateItemDto[]) {
         try {
             for (const item of createItemDto)
                 await validateOrReject(plainToInstance(CreateItemDto, item));
@@ -27,16 +26,6 @@ export class ItemController {
 
             throw new InternalServerErrorException();
         }
-    }
-
-    @Get()
-    findAll() {
-        return this.itemService.findAll();
-    }
-
-    @Get(':id')
-    findOne(@Param('id', ShortUuidPipe) id: string) {
-        return this.itemService.findOne(id);
     }
 
     @Patch(':id')

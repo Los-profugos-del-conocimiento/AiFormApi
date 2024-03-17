@@ -35,7 +35,8 @@ export class AuthController {
             httpOnly: true, 
             secure: true, 
             sameSite: 'strict', 
-            maxAge: 1 * 24 * 60 * 60 * 1000 // 1 day
+            maxAge: 5 * 24 * 60 * 60 * 1000 // 5 day
+            // maxAge: 1 * 24 * 60 * 60 * 1000 // 1 day
             // maxAge: 30 * 24 * 60 * 60 * 1000 // 30 days
         });
         response.redirect(this.configService.get<string>('urlFrontend'));
@@ -77,7 +78,7 @@ export class AuthController {
     async removeUser(
         @Req() request: Request
     ) {
-        const deleteResult = await this.authService.removeUser(request.user.id);
-        return { message: 'User removed.', user: request.user, deleteResult };
+        const userDeleted = await this.authService.removeUser(request.user.id);
+        return { message: 'User removed.', userDeleted };
     }
 }
