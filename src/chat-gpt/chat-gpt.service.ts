@@ -31,5 +31,23 @@ export class ChatGptService {
             const msg = (error as any as Error)?.message || 'Uncontrolled error';
             throw new Error(`AI Completions error: ${msg}`);
         }
-      }
+    }
+
+    async generateTitle(messages: Completions): Promise<string> {
+        messages.unshift({ role: 'system', content: 'Gpt Boy, eres un genial asistente.' });
+        try {
+            const response: ChatCompletion = await this.openai.chat.completions.create({
+                response_format: { type: "json_object" },
+                model: this.model,
+                n: this.n,
+                messages,
+            })
+
+            console.log('title usage', response.usage);
+            return JSON.parse(response.choices?.at(0)?.message?.content).title || '';
+        } catch (error) {
+            const msg = (error as any as Error)?.message || 'Uncontrolled error';
+            throw new Error(`Title AI Completions error: ${msg}`);
+        }
+    }
 }

@@ -12,6 +12,9 @@ export class Form extends Base {
     @Column({ length: 100 })
     title?: string;
 
+    @Column({ default: false, nullable: false })
+    isAutoTitle?: boolean;
+
     @Column({ type: 'text' })
     prompt?: string;
 
@@ -29,7 +32,7 @@ export class Form extends Base {
     )
     items?: Item[];
 
-    @ManyToOne(() => User, user => user.forms, { onDelete: 'CASCADE' })
+    @ManyToOne(() => User, user => user.forms, { eager: true, onDelete: 'CASCADE' })
     user?: User;
 
     // Google Form fields

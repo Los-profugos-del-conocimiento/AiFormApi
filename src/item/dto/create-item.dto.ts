@@ -6,10 +6,6 @@ import { Type } from 'class-transformer';
 
 export class CreateItemDto {
     @IsString()
-    @IsOptional()
-    readonly itemId?: string;
-
-    @IsString()
     readonly question: string;
 
     @IsString()
@@ -21,11 +17,11 @@ export class CreateItemDto {
     readonly answerType: string;
 
     @IsArray()
-    @Type(() => CreateAnswerCascadeDto)
     @ValidateNested({ each: true })
+    @Type(() => CreateAnswerCascadeDto)
     readonly answers: CreateAnswerCascadeDto[];
 
     @Type(() => Form)
     @IsNotEmpty()
-    readonly form: Form;
+    form: Form;
 }

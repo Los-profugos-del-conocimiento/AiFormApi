@@ -9,7 +9,7 @@ export class AnswerController {
     constructor(private readonly answerService: AnswerService) {}
 
     @Post()
-    async create(@Body(AnswerMutationPipe) createAnswersDto: CreateAnswersDto) {
+    create(@Body(AnswerMutationPipe) createAnswersDto: CreateAnswersDto) {
         return this.answerService.create(createAnswersDto.answers);
     }
 

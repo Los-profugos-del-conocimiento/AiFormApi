@@ -7,27 +7,20 @@ import { FormService } from './form.service';
 
 @Injectable()
 export class FormPrompt implements PipeTransform<any> {
-    async transform(createFormDto: CreateFormDto, metadata: ArgumentMetadata) {
-        const completions = [
+    transform(createFormDto: CreateFormDto, metadata: ArgumentMetadata) {
+        console.log('metadata', metadata)
+        const isQuiz = createFormDto.type === 'quiz';
+
+        createFormDto.completions = [
             ...PromptRules(createFormDto.prompt),
-            ...(createFormDto.type === 'quiz' ? QuizRules : SurveyRules),
-            ...((createFormDto.type === 'quiz' && createFormDto.difficulty) ? DifficultyRules(createFormDto.difficulty) : []),
+            ...(isQuiz ? QuizRules : SurveyRules),
+            ...((isQuiz && createFormDto.difficulty) ? DifficultyRules(createFormDto.difficulty) : []),
             ...QuestionRules(createFormDto.questions),
-            ...AnswerRules(createFormDto.answerTypes, true),
+            ...AnswerRules(createFormDto.answerTypes, isQuiz),
             ...ResponseRules
         ]
 
-        createFormDto.completions = completions;
-
-        // toDo: generate a title with IA if not provided
-        if (!createFormDto.title) createFormDto.title = 'Untitled';
-
         return createFormDto;
-    }
-
-    private toValidate(metatype: any): boolean {
-        const types = [String, Boolean, Number, Array, Object];
-        return !types.includes(metatype);
     }
 }
 

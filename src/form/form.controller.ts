@@ -7,6 +7,7 @@ import { ChatGptService } from '../chat-gpt/chat-gpt.service';
 import { FormResponse } from '../chat-gpt/chat-gpt.interface';
 import { CreateFormDto } from './dto/create-form.dto';
 import { UpdateFormDto } from './dto/update-form.dto';
+import { PromptRules, TitleRules } from './form.rules'
 import { Form } from './entities/form.entity';
 import { FormService } from './form.service';
 import { AuthGuard } from '@nestjs/passport';
@@ -23,48 +24,74 @@ export class FormController {
     @Post()
     @UseGuards(AuthGuard('jwt'))
     async create(
+        @Req() request: Request,
         @Body(FormPrompt) createFormDto: CreateFormDto,
-        @Req() request: Request
     ) {
         const { questions }: FormResponse = await this.chatGptService.generateForm(createFormDto.completions);
 
+        console.log('questions', questions);
         if (!questions) 
             throw new InternalServerErrorException('Failed to generate form questions. Please try again.');
 
         delete createFormDto.completions;
         
-        return await this.formService.create({ ...createFormDto, items: questions, user: request.user } as Form);
+        const isAutoTitle: boolean = !createFormDto.title;
+        if (isAutoTitle)
+            createFormDto.title = 
+                await this.chatGptService.generateTitle([ ...TitleRules, ...PromptRules(createFormDto.prompt)]);
+
+        console.log('createFormDto.title', createFormDto.title);
+        return await this.formService.create(
+            { ...createFormDto, isAutoTitle, items: questions, user: request.user } as Form
+        );
     }
 
     @Get()
     @UseGuards(AuthGuard('jwt'))
     async getFormsByUser(
-        @Req() request: Request
+        @Req() request: Request,
     ) {
         return this.formService.findByUser(request.user.id);
     }
 
     @Get(':id')
     @UseGuards(AuthGuard('jwt'))
-    // toDo: validate if the user has access to the form
-    findOne(@Param('id', ShortUuidPipe) id: string) {
-        return this.formService.findOne(id);
+    findOne(
+        @Req() request: Request,
+        @Param('id', ShortUuidPipe) id: string
+    ) {
+        return this.formService.findOne(id, request.user.id);
     }
 
     @Patch(':id')
     @UseGuards(AuthGuard('jwt'))
-    update(
+    async update(
+        @Req() request: Request,
         @Param('id', ShortUuidPipe) id: string, 
-        @Body() updateFormDto: UpdateFormDto
+        @Body(FormPrompt) updateFormDto: UpdateFormDto
     ) {
-        // toDo: update form
-        // return this.formService.update(id, updateFormDto);
+        const existingForm = await this.formService.findOne(id, request.user.id);
+
+        const { questions }: FormResponse = await this.chatGptService.generateForm(updateFormDto.completions);
+
+        if (!questions)
+            throw new InternalServerErrorException('Failed to generate form questions. Please try again.');
+
+        delete updateFormDto.completions;
+
+        // Actualizar el formulario con las nuevas preguntas generadas
+        await this.formService.update(id, { ...existingForm, ...updateFormDto, items: questions });
+
+        return { message: 'Form updated successfully' };
     }
 
     @Delete(':id')
     @UseGuards(AuthGuard('jwt'))
-    async remove(@Param('id', ShortUuidPipe) id: string) {
-        const formDeleted = await this.formService.remove(id);
+    async remove(
+        @Req() request: Request,
+        @Param('id', ShortUuidPipe) id: string
+    ) {
+        const formDeleted = await this.formService.remove(id, request.user.id);
         return { message: 'Form removed.', formDeleted }
     }
 }

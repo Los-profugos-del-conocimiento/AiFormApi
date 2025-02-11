@@ -1,4 +1,4 @@
-import { UnauthorizedException, Injectable } from '@nestjs/common';
+import { UnauthorizedException, NotFoundException, Injectable } from '@nestjs/common';
 import { JwtPayload } from '../interfaces/jwt-payload.interface';
 import { AuthService } from '../../auth/auth.service';
 import { PassportStrategy } from '@nestjs/passport';
@@ -31,6 +31,9 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
             throw new UnauthorizedException('Token revoked.');
 
         const user = await this.authService.getUserByEmail(email)
+
+        if (!user)
+            throw new NotFoundException('User doesn\'t exist.');
 
         if (!user.isActive)
             throw new UnauthorizedException('User is inactive.');

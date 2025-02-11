@@ -4,8 +4,8 @@ import {
 } from 'class-validator';
 import { Completions } from '../../chat-gpt/chat-gpt.interface';
 import { CreateItemDto } from '../../item/dto/create-item.dto';
+import { Type as IType, Difficulty } from '../form.enum';
 import { AnswerType } from '../../answer/answer.enum';
-import { Type as IType } from '../form.enum';
 import { Type } from 'class-transformer';
 
 export class CreateFormDto {
@@ -34,7 +34,7 @@ export class CreateFormDto {
 
     @IsInt()
     @IsOptional()
-    @IsEnum([1, 2, 3, 4, 5])
+    @IsEnum(Difficulty)
     readonly difficulty: number;
 
     completions?: Completions

@@ -1,12 +1,6 @@
-import { 
-    Controller, Get, Post, Body, Patch, Param, Delete, 
-    InternalServerErrorException
-} from '@nestjs/common';
-import { validateOrReject, ValidationError } from 'class-validator';
+import { Controller, Post, Body, Patch, Param, Delete } from '@nestjs/common';
 import { ShortUuidPipe } from '../common/pipes/short-uuid.pipe';
-import { FormValidationPipe } from '../form/form.pipe';
-import { CreateItemDto } from './dto/create-item.dto';
-import { UpdateItemDto } from './dto/update-item.dto';
+import { CreateItemsDto, UpdateItemsDto } from './dto';
 import { plainToInstance } from 'class-transformer';
 import { ItemService } from './item.service';
 
@@ -15,26 +9,13 @@ export class ItemController {
     constructor(private readonly itemService: ItemService) {}
 
     @Post()
-    async create(@Body(FormValidationPipe) createItemDto: CreateItemDto[]) {
-        try {
-            for (const item of createItemDto)
-                await validateOrReject(plainToInstance(CreateItemDto, item));
-            return this.itemService.create(createItemDto);
-        } catch (errors) {
-            if (errors instanceof Array && errors[0] instanceof ValidationError)
-                throw errors[0];
-
-            throw new InternalServerErrorException();
-        }
+    async create(@Body() CreateItemsDto: CreateItemsDto) {
+        return await this.itemService.create(CreateItemsDto.items)
     }
 
-    @Patch(':id')
-    update(
-        @Param('id', ShortUuidPipe) id: string, 
-        @Body() updateItemDto: UpdateItemDto
-    ) {
-        // toDo: test update item
-        return this.itemService.update(id, updateItemDto);
+    @Patch()
+    update(@Body() updateItemsDto: UpdateItemsDto) {
+        return this.itemService.update(updateItemsDto.items);
     }
 
     @Delete(':id')

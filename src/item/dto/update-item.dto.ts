@@ -1,4 +1,20 @@
-import { PartialType } from '@nestjs/mapped-types';
-import { CreateItemDto } from './create-item.dto';
+import { IsString, IsArray, IsOptional, ValidateNested } from 'class-validator';
+import { CreateAnswerCascadeDto } from '../../answer/dto';
+import { Type } from 'class-transformer';
 
-export class UpdateItemDto extends PartialType(CreateItemDto) {}
+export class UpdateItemDto {
+    @IsString()
+    id: string;
+
+    @IsString()
+    readonly question: string;
+
+    @IsString()
+    @IsOptional()
+    readonly description?: string;
+
+    @IsArray()
+    @ValidateNested({ each: true })
+    @Type(() => CreateAnswerCascadeDto)
+    readonly answers: CreateAnswerCascadeDto[];
+}

@@ -24,6 +24,14 @@ export const SurveyRules: Completions = [{
     `
 }]
 
+export const TitleRules: Completions = [{
+    role: 'user',
+    content: `json 
+        Genera un título para un formulario de mínimo 5 y máximo 100 caracteres 
+        con el siguiente formato { title: 'Título' } y de acuerdo al siguiente prompt:
+    `
+}]
+
 export const DifficultyRules = (difficulty: number): Completions => {
     return [{
         role: 'user',
@@ -42,17 +50,15 @@ export const DifficultyRules = (difficulty: number): Completions => {
 export const QuestionRules = (questions: number): Completions => {
     return [{
         role: 'user',
-        content: `
-            El formulario resultante debería tener ${questions} preguntas en total.
-        `
+        content: `El formulario resultante debería tener ${questions} preguntas en total.`
     }]
 }
 
 export const AnswerRules = (answerTypes: string[], isQuiz: boolean): Completions => {
     const rulesContent = answerTypes
-    .map(type => QuestionRulesMap[type] ? QuestionRulesMap[type](isQuiz) : '')
-    .filter(rule => rule)
-    .join('\n\n');
+        .map(type => QuestionRulesMap[type] ? QuestionRulesMap[type](isQuiz) : '')
+        .filter(rule => rule)
+        .join('\n\n');
     
     return [{
         role: 'user',

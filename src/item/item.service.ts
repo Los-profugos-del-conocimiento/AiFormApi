@@ -13,27 +13,29 @@ export class ItemService {
     ) {}
 
     async create(createItemDto: CreateItemDto[]): Promise<Item[]> {
-        return await Promise.all(createItemDto.map(async (createItem) =>
-            await this.itemRepository.save(this.itemRepository.create(createItem))
-        ));
+        const items = createItemDto.map(dto => this.itemRepository.create(dto));
+
+        await this.itemRepository.save(items);
+
+        return await Promise.all(items.map(item => this.findOne(item.id)));
     }
 
-    async findOne(id: string): Promise<Item> {
-        console.log('find one item:', id);
+    async findOne(id: string, relations?: string[]): Promise<Item> {
         if (!id) throw new NotFoundException('Item ID not provided.');
 
-        const item: Item = await this.itemRepository.findOne({ where: { id }, relations: { form: true } })
-        if (!item) throw new NotFoundException(`Item with ID ${id} not found.`);
+        const item: Item = await this.itemRepository.findOne({ where: { id }, relations })
+        if (!item) throw new NotFoundException(`Item with ID "${id}" not found.`);
 
         return item;
     }
 
     // toDo: rewrite update method
-    async update(id: string, updateItemDto: UpdateItemDto): Promise<Item> {
-        const item = await this.findOne(id);
-        Object.assign(item, updateItemDto);
+    async update(updateItemDto: UpdateItemDto[]): Promise<Item[]> {
+        const items = updateItemDto.map(dto => this.itemRepository.create(dto));
 
-        return await this.itemRepository.save(item);
+        await this.itemRepository.save(items);
+
+        return await Promise.all(items.map(async item => await this.findOne(item.id)));
     }
 
     async remove(id: string): Promise<void> {

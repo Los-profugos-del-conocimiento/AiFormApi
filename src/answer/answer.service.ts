@@ -23,7 +23,7 @@ export class AnswerService {
         if (!id) throw new NotFoundException('Answer ID not provided.');
 
         const answer = await this.answerRepository.findOne({  where: { id }, relations });
-        if (!answer) throw new NotFoundException(`Answer with ID ${id} not found`);
+        if (!answer) throw new NotFoundException(`Answer with ID "${id}" not found`);
 
         return answer;
     }

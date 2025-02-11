@@ -1,37 +1,39 @@
 import { validateCreateAnswer, validateUpdateAnswer } from '../answer/answer.utils';
-import { CreateAnswersDto, UpdateAnswersDto } from '../answer/dto';
+import { CreateItemsDto, UpdateItemsDto } from '../item/dto';
 import { PipeTransform, Injectable } from '@nestjs/common';
 import { AnswerService } from '../answer/answer.service';
+import { FormService } from '../form/form.service';
 import { ItemService } from './item.service';
 
 @Injectable()
 export class ItemMutationPipe implements PipeTransform {
     constructor(
         private readonly itemService: ItemService,
+        private readonly formService: FormService,
         private readonly answerService: AnswerService
     ) {}
 
-    async transform(dto: CreateAnswersDto | UpdateAnswersDto) {
+    async transform(dto: CreateItemsDto | UpdateItemsDto) {
         const itemCache = new Map<string, any>();
 
-        const answers = await dto.answers.reduce(async (accPromise, answer) => {
-            const accumulatedAnswers = await accPromise;
+        const answers = await dto.items.reduce(async (accPromise, item) => {
+            const accumulatedItems = await accPromise;
 
-            if ('item' in answer) {
-                const itemId = answer.item as unknown as string;
+            if ('form' in item) {
+                const formId = item.form as unknown as string;
 
-                if (!itemCache.has(itemId))
-                    itemCache.set(itemId, this.itemService.findOne(itemId));
+                if (!itemCache.has(formId))
+                    itemCache.set(formId, this.formService.findOne(formId));
             
-                answer.item = await itemCache.get(itemId);
-                accumulatedAnswers.push(validateCreateAnswer(answer));
-            } else if ('id' in answer) {
-                const answerId = answer.id;
-                const answerEntity = await this.answerService.findOne(answerId, ['item', 'item.form']);
-                accumulatedAnswers.push(validateUpdateAnswer(answerEntity, answer));
+                item.form = await itemCache.get(formId);
+                // accumulatedItems.push(validateCreateAnswer(answer));
+            } else if ('id' in item) {
+                const itemId = item.id;
+                const itemEntity = await this.itemService.findOne(itemId, ['form']);
+                // accumulatedAnswers.push(validateUpdateAnswer(answerEntity, answer));
             }
 
-            return accumulatedAnswers;
+            return accumulatedItems;
         }, Promise.resolve([]));
 
         return { answers };
